@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유형검사 결과</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .result-box {
+            background-color: #e8f5e9;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 3px solid #4CAF50;
+        }
+        .result-type {
+            font-size: 48px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .result-description {
+            line-height: 1.8;
+            color: #555;
+        }
+        .characteristics {
+            margin-top: 20px;
+        }
+        .characteristics h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        .characteristics ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .characteristics li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .characteristics li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        button, a.btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .home-btn {
+            background-color: #ddd;
+            color: #333;
+        }
+        .home-btn:hover {
+            background-color: #ccc;
+        }
+        .roadmap-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .roadmap-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>유형검사 결과</h1>
+        
+        <div class="result-box">
+            <div class="result-type">A 유형</div>
+            <div class="result-title">체계적 분석가</div>
+            <div class="result-description">
+                <p>논리적이고 체계적인 사고를 선호하는 유형입니다. 새로운 지식을 습득할 때 기초부터 탄탄히 쌓아가며, 전체적인 구조를 파악하는 것을 중요하게 생각합니다.</p>
+                
+                <div class="characteristics">
+                    <h3>주요 특징</h3>
+                    <ul>
+                        <li>체계적이고 계획적인 학습 선호</li>
+                        <li>이론적 기반을 중시</li>
+                        <li>단계적 접근을 통한 깊이 있는 이해</li>
+                        <li>문제 해결 시 논리적 분석 활용</li>
+                    </ul>
+                </div>
+
+                <div class="characteristics">
+                    <h3>추천 학습 방법</h3>
+                    <ul>
+                        <li>기본 개념부터 차근차근 학습</li>
+                        <li>체계적인 커리큘럼 따라가기</li>
+                        <li>이론 학습 후 실습으로 확인</li>
+                        <li>정리 노트 작성하며 구조화</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 실제로는 JavaScript로 동적으로 표시되어야 하지만, 틀만 구현 -->
+        <!-- B, C, D 유형도 같은 형태로 표시 가능 -->
+
+        <div class="button-container">
+            <a href="index.htm" class="btn home-btn">홈으로</a>
+            <a href="roadmap.htm" class="btn roadmap-btn">로드맵 보기</a>
+        </div>
+    </div>
+</body>
+</html>

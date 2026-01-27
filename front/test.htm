@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유형검사</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .question h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        button, .back-btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .back-btn {
+            background-color: #ddd;
+            color: #333;
+        }
+        .back-btn:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>유형검사</h1>
+        <form action="result.htm" method="get">
+            <div class="question">
+                <h3>1. 새로운 주제를 공부할 때 어떤 방식을 선호하나요?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="A" required> 체계적으로 이론부터 차근차근 학습</label>
+                    <label><input type="radio" name="q1" value="B"> 실습과 프로젝트를 통해 직접 경험하며 학습</label>
+                    <label><input type="radio" name="q1" value="C"> 다양한 자료를 찾아보며 폭넓게 학습</label>
+                    <label><input type="radio" name="q1" value="D"> 필요한 부분만 빠르게 학습</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>2. 문제 해결 시 어떤 접근 방식을 주로 사용하나요?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="A" required> 논리적이고 체계적인 분석</label>
+                    <label><input type="radio" name="q2" value="B"> 직관과 경험을 바탕으로 시도</label>
+                    <label><input type="radio" name="q2" value="C"> 여러 관점에서 창의적으로 접근</label>
+                    <label><input type="radio" name="q2" value="D"> 빠른 판단과 실행</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>3. 팀 프로젝트에서 주로 어떤 역할을 맡나요?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="A" required> 계획을 세우고 전체를 조율하는 역할</label>
+                    <label><input type="radio" name="q3" value="B"> 직접 구현하고 실행하는 역할</label>
+                    <label><input type="radio" name="q3" value="C"> 아이디어를 제시하고 연구하는 역할</label>
+                    <label><input type="radio" name="q3" value="D"> 빠르게 결과를 만들어내는 역할</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3>4. 선호하는 학습 환경은?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="A" required> 조용하고 정돈된 공간에서 혼자</label>
+                    <label><input type="radio" name="q4" value="B"> 다른 사람들과 함께 협력하며</label>
+                    <label><input type="radio" name="q4" value="C"> 자유롭고 편안한 분위기에서</label>
+                    <label><input type="radio" name="q4" value="D"> 어디서든 빠르게 집중해서</label>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <a href="index.htm" class="back-btn">홈으로</a>
+                <button type="submit" class="submit-btn">검사 완료</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

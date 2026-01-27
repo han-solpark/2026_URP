@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생정보 입력</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin: 25px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .checkbox-group {
+            margin-top: 10px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 20px;
+            font-weight: normal;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        button, .back-btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .back-btn {
+            background-color: #ddd;
+            color: #333;
+        }
+        .back-btn:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>학생정보 입력</h1>
+        <form action="roadmap.htm" method="get">
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" id="name" name="name" required placeholder="이름을 입력하세요">
+            </div>
+
+            <div class="form-group">
+                <label for="grade">학년</label>
+                <select id="grade" name="grade" required>
+                    <option value="">선택하세요</option>
+                    <option value="1">1학년</option>
+                    <option value="2">2학년</option>
+                    <option value="3">3학년</option>
+                    <option value="4">4학년</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="major">전공</label>
+                <input type="text" id="major" name="major" required placeholder="전공을 입력하세요">
+            </div>
+
+            <div class="form-group">
+                <label for="gpa">학점 (GPA)</label>
+                <input type="number" id="gpa" name="gpa" min="0" max="4.5" step="0.01" placeholder="예: 3.5">
+            </div>
+
+            <div class="form-group">
+                <label>관심 분야</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="interest" value="ai"> 인공지능/머신러닝</label>
+                    <label><input type="checkbox" name="interest" value="web"> 웹 개발</label>
+                    <label><input type="checkbox" name="interest" value="app"> 앱 개발</label>
+                    <label><input type="checkbox" name="interest" value="data"> 데이터 분석</label>
+                    <label><input type="checkbox" name="interest" value="security"> 보안</label>
+                    <label><input type="checkbox" name="interest" value="game"> 게임 개발</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">보유 기술 및 언어</label>
+                <textarea id="skills" name="skills" placeholder="예: Python, Java, C++, 머신러닝 기초 등"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">프로젝트 경험</label>
+                <textarea id="experience" name="experience" placeholder="진행했던 프로젝트나 경험을 간단히 작성해주세요"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="goal">학습 목표</label>
+                <textarea id="goal" name="goal" required placeholder="어떤 목표를 가지고 학습하고 싶으신가요?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="time">주간 학습 가능 시간</label>
+                <select id="time" name="time" required>
+                    <option value="">선택하세요</option>
+                    <option value="5">5시간 미만</option>
+                    <option value="10">5-10시간</option>
+                    <option value="15">10-15시간</option>
+                    <option value="20">15시간 이상</option>
+                </select>
+            </div>
+
+            <div class="button-container">
+                <a href="index.htm" class="back-btn">홈으로</a>
+                <button type="submit" class="submit-btn">제출하기</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
