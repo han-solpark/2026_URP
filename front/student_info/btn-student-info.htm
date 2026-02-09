@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>정보 기록</title>
+    <style>
+        :root{ --bg: #667eea; --btn-bg: #ffffff; } /* 색상 변수 정의*/
+        html, body { height: 100%; margin: 0; }
+        
+        body {
+            background: var(--bg);
+            font-family: 'Malgun Gothic', sans-serif;
+            /* 전체를 중앙으로 모으기 위한 설정 */
+            display: flex;
+			flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+			padding-top: 80px;
+			padding-bottom: 60px;
+            min-height: 100vh;
+        }
+
+        .main-container { /* 제목과 버튼 그룹을 감싸는 컨테이너 */
+            display: flex;
+            flex-direction: column; /* 세로로 쌓기 */
+            align-items: center;
+            gap: 100px; /* 제목과 버튼 그룹 사이 간격 */
+        }
+
+        .header { /*제목 스타일*/
+            text-align: center;
+            color: rgb(255, 255, 255);
+			margin-bottom: 80px;
+        }
+
+        .header h1 { /*제목 글자 스타일*/
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-group { /* 버튼 그룹 */
+            display: flex;
+            gap: 60px; /* 버튼 사이 간격 */
+        }
+
+        .btn { /* 버튼 스타일 */
+            background: var(--btn-bg);
+            border: none;
+            border-radius: 25px;
+            width: 350px;
+            height: 280px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover { /* 호버 효과 */
+            transform: translateY(-5px); /* 마우스 커서 대면 올라가는 효과 */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+        }
+
+        .btn:active { transform: translateY(-2px); } /* 클릭 시 약간 내려가는 효과 */
+
+        .footer { /* 아래 이전으로 버튼 컨테이너 */
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .back-btn { /* 이전으로 버튼 스타일 */
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .back-btn:active { transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>🧾 정보기록</h1>
+        </div>
+        <div class="btn-group">
+            <a href="btn-myinfo.htm">
+                <button class="btn">👤 나의 정보 기록</button>
+            </a>
+
+            <a href="btn-myact.htm">
+                <button class="btn">📂 나의 활동 기록</button>
+            </a>
+        </div>
+    </div>
+    <div class="footer">
+        <a href="../index.htm" class="back-btn">← 이전으로</a>
+    </div>
+</body>
+</html>

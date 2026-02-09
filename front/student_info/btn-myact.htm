@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>나의 활동 기록</title>
+    <style>
+        :root{ 
+            --bg: #f4f7fb; 
+            --accent: #2b6cb0;
+            --card-width: 60%;
+            --card-height: auto;
+            --card-padding: 25px;
+            --card-gap: 20px;
+        }
+        html, body { height: 100%; margin: 0; }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        /* 헤더 스타일 */
+        h1 { 
+            text-align: center; 
+            color: white; 
+            font-size: 2rem;
+            margin: 0 0 40px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        /*  활동 카드 스타일 */
+        .records-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--card-gap);
+            margin-bottom: 40px;
+            justify-items: center;
+        }
+        
+        .record-card {
+            background: #fff;
+            padding: var(--card-padding);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            width: var(--card-width);
+            height: var(--card-height);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .record-card.hidden {
+            opacity: 0.5;
+        }
+        
+        .record-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .record-card h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.3rem;
+            flex: 1;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* 카드 버튼 (오른쪽 상단 세 개) 스타일 */
+        .card-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            width: 32px;
+            height: 32px;
+        }
+        
+        .card-button svg {
+            width: 20px;
+            height: 20px;
+            stroke: #666;
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.2s ease;
+        }
+        
+        .card-button:hover svg {
+            stroke: #2b6cb0;
+            transform: scale(1.15);
+        }
+        
+        .card-button.delete:hover svg {
+            stroke: #d32f2f;
+        }
+        
+        .card-button.toggle-visibility.hidden svg .eye-open {
+            display: none;
+        }
+        
+        .card-button.toggle-visibility.hidden svg .eye-closed {
+            display: block;
+        }
+        
+        .card-button.toggle-visibility svg .eye-open {
+            display: block;
+        }
+        
+        .card-button.toggle-visibility svg .eye-closed {
+            display: none;
+        }
+        
+        .record-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+        
+        .record-type {
+            display: inline-block;
+            background: #2b6cb0;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .record-period {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .record-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            word-break: break-word;
+        }
+        
+        .record-url {
+            color: #2b6cb0;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        
+        .record-url:hover {
+            text-decoration: underline;
+        }
+        
+        .add-button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .add-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .add-button:hover {
+            background: #1e4d7f;
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .footer {
+            text-align: center;
+        }
+        
+        .back {
+            display: inline-block;
+            background: #ffffff;
+            color: #000000;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(43,108,176,0.3);
+        }
+        
+        /* +버튼 눌렀으 때 나오는 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        
+        .close {
+            color: #999;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        /* 모달 폼 스타일 - 입력 내용 그룹으로 묶음*/
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Malgun Gothic', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="url"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Malgun Gothic', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 5px rgba(43,108,176,0.3);
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .form-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Malgun Gothic', sans-serif;
+        }
+        
+        .btn-save {
+            background: #2b6cb0;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: #1e4d7f;
+        }
+        
+        .btn-cancel {
+            background: #ddd;
+            color: #333;
+        }
+        
+        .btn-cancel:hover {
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 나의 활동 기록</h1>
+        
+        <div class="records-grid" id="recordsGrid">
+            <!-- 샘플 활동 카드 -->
+            <div class="record-card" data-id="1" data-hidden="false">
+                <div class="record-card-header">
+                    <h3>URP 1형</h3>
+                    <div class="card-actions">
+                        <button class="card-button toggle-visibility" title="공개/비공개">
+                            <svg viewBox="0 0 24 24">
+                                <g class="eye-open">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M12 5c8 0 12 7 12 7s-4 7-12 7-12-7-12-7 4-7 12-7z"></path>
+                                </g>
+                                <g class="eye-closed">
+                                    <path d="M3 3l18 18M6 6c-1 1-2 2-3 3M18 18c1-1 2-2 3-3M12 5c8 0 12 7 12 7s-4 7-12 7-12-7-12-7 4-7 12-7z"></path>
+                                </g>
+                            </svg>
+                        </button>
+                        <button class="card-button edit" title="수정">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
+                                <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                            </svg>
+                        </button>
+                        <button class="card-button delete" title="삭제">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="record-meta">
+                    <span class="record-type">연구실</span>
+                    <span class="record-period">2025.10.08 ~ 2025.12.10 <span class="semester-info" style="color: #999;">(3학년 1학기)</span></span>
+                </div>
+                <div class="record-content">
+                    학부생 연구 프로그램 참여를 통한 연구 기초 역량 강화
+                </div>
+                <div>
+                    <span style="color: #666; font-size: 0.85rem;">URL: </span>
+                    <a href="https://www.skku.edu/skku/campus/skk_comm/notice01.do?mode=view&articleNo=134615&article.offset=0&articleLimit=10&srSearchVal=urp" class="record-url" target="_blank">https://www.skku.edu/skku/campus/skk_comm/notice01.do?mode=view&articleNo=134615&article.offset=0&articleLimit=10&srSearchVal=urp</a>
+                </div>
+            </div>
+            
+            <div class="record-card" data-id="2" data-hidden="false">
+                <div class="record-card-header">
+                    <h3>캡스톤디자인 프로젝트</h3>
+                    <div class="card-actions">
+                        <button class="card-button toggle-visibility" title="공개/비공개">
+                            <svg viewBox="0 0 24 24">
+                                <g class="eye-open">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M12 5c8 0 12 7 12 7s-4 7-12 7-12-7-12-7 4-7 12-7z"></path>
+                                </g>
+                                <g class="eye-closed">
+                                    <path d="M3 3l18 18M6 6c-1 1-2 2-3 3M18 18c1-1 2-2 3-3M12 5c8 0 12 7 12 7s-4 7-12 7-12-7-12-7 4-7 12-7z"></path>
+                                </g>
+                            </svg>
+                        </button>
+                        <button class="card-button edit" title="수정">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
+                                <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                            </svg>
+                        </button>
+                        <button class="card-button delete" title="삭제">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="record-meta">
+                    <span class="record-type">비교과활동</span>
+                    <span class="record-period">2025.09.28 ~ 2026.02.22 <span class="semester-info" style="color: #999;">(3학년 2학기)</span></span>
+                </div>
+                <div class="record-content">
+                    선배와 함께하는 1:1 코딩 멘토링
+                </div>
+                <div>
+                    <span style="color: #666; font-size: 0.85rem;">URL: </span>
+                    <a href="https://www.skku.edu/skku/campus/skk_comm/notice01.do?mode=view&articleNo=134801&article.offset=0&articleLimit=10" class="record-url" target="_blank">https://www.skku.edu/skku/campus/skk_comm/notice01.do?mode=view&articleNo=134801&article.offset=0&articleLimit=10</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="add-button-container">
+            <button class="add-button" id="addActivityBtn" title="활동 추가">+</button>
+        </div>
+        
+        <div class="footer">
+            <a href="btn-student-info.htm" class="back">← 이전으로</a>
+        </div>
+    </div>
+    
+    <!-- 활동 추가/수정 모달 -->
+    <div class="modal" id="activityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">활동 기록 추가</h2>
+                <button class="close" id="closeModal">&times;</button>
+            </div>
+            <form id="activityForm">
+                <input type="hidden" id="editingId" value="">
+                
+                <div class="form-group">
+                    <label for="activityName">활동 이름 *</label>
+                    <input type="text" id="activityName" name="activityName" placeholder="예: 정보처리기사" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="activityType">활동 구분 *</label>
+                    <select id="activityType" name="activityType" required onchange="toggleCustomType()">
+                        <option value="">선택해주세요</option>
+                        <option value="자격증">자격증</option>
+                        <option value="비교과활동">비교과활동</option>
+                        <option value="연구실">연구실</option>
+                        <option value="대회">대회</option>
+                        <option value="custom">직접 입력</option>
+                    </select>
+                    <input type="text" id="customType" name="customType" placeholder="예: 인턴십" style="display: none; margin-top: 8px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="activityContent">활동 내용 *</label>
+                    <textarea id="activityContent" name="activityContent" placeholder="활동에 대한 상세한 설명을 입력해주세요." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startDate">시작 날짜 *</label>
+                    <input type="date" id="startDate" name="startDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endDate">종료 날짜 *</label>
+                    <input type="date" id="endDate" name="endDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="activitySemester">활동 시기 *</label>
+                    <select id="activitySemester" name="activitySemester" required onchange="toggleCustomSemester()">
+                        <option value="">선택해주세요</option>
+                        <option value="1학년 1학기">1학년 1학기</option>
+                        <option value="1학년 2학기">1학년 2학기</option>
+                        <option value="2학년 1학기">2학년 1학기</option>
+                        <option value="2학년 2학기">2학년 2학기</option>
+                        <option value="3학년 1학기">3학년 1학기</option>
+                        <option value="3학년 2학기">3학년 2학기</option>
+                        <option value="4학년 1학기">4학년 1학기</option>
+                        <option value="4학년 2학기">4학년 2학기</option>
+                        <option value="custom">직접 입력</option>
+                    </select>
+                    <input type="text" id="customSemester" name="customSemester" placeholder="예: 2학년 여름 방학" style="display: none; margin-top: 8px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="activityUrl">URL</label>
+                    <input type="url" id="activityUrl" name="activityUrl" placeholder="https://example.com">
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn-save" id="submitBtn">저장</button>
+                    <button type="button" class="btn-cancel" id="cancelBtn">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const modal = document.getElementById('activityModal');
+        const addActivityBtn = document.getElementById('addActivityBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const activityForm = document.getElementById('activityForm');
+        const recordsGrid = document.getElementById('recordsGrid');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const editingId = document.getElementById('editingId');
+        
+        let nextId = 3;
+        
+        // 활동 구분 직접 입력 토글
+        function toggleCustomType() {
+            const typeSelect = document.getElementById('activityType');
+            const customInput = document.getElementById('customType');
+            if (typeSelect.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+        
+        // 활동 시기 직접 입력 토글
+        function toggleCustomSemester() {
+            const semesterSelect = document.getElementById('activitySemester');
+            const customInput = document.getElementById('customSemester');
+            if (semesterSelect.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+        
+        // 날짜 입력 (YYYY-MM to YYYY.MM)
+        function formatDateForDisplay(dateString) {
+            if (!dateString) return '';
+            return dateString.replace('-', '.');
+        }
+        
+        // 카드에서 날짜 포맷 파싱 (YYYY.MM ~ YYYY.MM to YYYY-MM and YYYY-MM)
+        function parsePeriodString(periodString) {
+            const parts = periodString.split('~').map(p => p.trim());
+            if (parts.length === 2) {
+                const start = parts[0].replace('.', '-');
+                const end = parts[1].replace('.', '-');
+                return { start, end };
+            }
+            return { start: '', end: '' };
+        }
+        
+        // 모달 열기 (추가 모드)
+        addActivityBtn.addEventListener('click', function() {
+            modalTitle.textContent = '활동 기록 추가';
+            submitBtn.textContent = '저장';
+            editingId.value = '';
+            activityForm.reset();
+            document.getElementById('customSemester').style.display = 'none';
+            document.getElementById('customType').style.display = 'none';
+            modal.classList.add('active');
+        });
+        
+        // 모달 닫기
+        closeModal.addEventListener('click', function() {
+            modal.classList.remove('active');
+        });
+        
+        cancelBtn.addEventListener('click', function() {
+            modal.classList.remove('active');
+        });
+        
+        // 모달 외부 클릭하면 닫기
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+        
+        // 눈 아이콘 토글 기능
+        function attachToggleVisibilityListener(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = button.closest('.record-card');
+                const isHidden = card.getAttribute('data-hidden') === 'true';
+                card.setAttribute('data-hidden', !isHidden);
+                
+                if (isHidden) {
+                    card.classList.remove('hidden');
+                    button.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                    button.classList.add('hidden');
+                }
+            });
+        }
+        
+        // 수정 버튼 기능
+        function attachEditListener(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = button.closest('.record-card');
+                const id = card.getAttribute('data-id');
+                
+                // 카드에서 데이터 추출
+                const name = card.querySelector('h3').textContent;
+                const type = card.querySelector('.record-type').textContent;
+                const content = card.querySelector('.record-content').textContent.trim();
+                const periodSpan = card.querySelector('.record-period');
+                const period = periodSpan.textContent.split('(')[0].trim();
+                const semesterMatch = periodSpan.textContent.match(/\((.+?)\)/);
+                const semester = semesterMatch ? semesterMatch[1] : '';
+                const urlLink = card.querySelector('.record-url');
+                const url = urlLink ? urlLink.href : '';
+                
+                // 기간 파싱
+                const { start, end } = parsePeriodString(period);
+                
+                // 폼 채우기
+                document.getElementById('activityName').value = name;
+                document.getElementById('activityContent').value = content;
+                document.getElementById('startDate').value = start;
+                document.getElementById('endDate').value = end;
+                document.getElementById('activityUrl').value = url;
+                
+                // 활동 구분 설정
+                const typeSelect = document.getElementById('activityType');
+                const customTypeInput = document.getElementById('customType');
+                
+                if (typeSelect.querySelector(`option[value="${type}"]`)) {
+                    typeSelect.value = type;
+                    customTypeInput.style.display = 'none';
+                } else {
+                    typeSelect.value = 'custom';
+                    customTypeInput.value = type;
+                    customTypeInput.style.display = 'block';
+                }
+                
+                // 활동 시기 설정
+                const semesterSelect = document.getElementById('activitySemester');
+                const customSemesterInput = document.getElementById('customSemester');
+                
+                if (semesterSelect.querySelector(`option[value="${semester}"]`)) {
+                    semesterSelect.value = semester;
+                    customSemesterInput.style.display = 'none';
+                } else {
+                    semesterSelect.value = 'custom';
+                    customSemesterInput.value = semester;
+                    customSemesterInput.style.display = 'block';
+                }
+                
+                editingId.value = id;
+                
+                // 모달 표시
+                modalTitle.textContent = '활동 기록 수정';
+                submitBtn.textContent = '수정';
+                modal.classList.add('active');
+            });
+        }
+        
+        // 삭제 버튼 기능
+        function attachDeleteListener(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('정말로 이 활동을 삭제하시겠습니까?')) {
+                    const card = button.closest('.record-card');
+                    card.remove();
+                }
+            });
+        }
+        
+        // 카드에 이벤트 리스너 추가
+        function attachCardListeners(card) {
+            const toggleBtn = card.querySelector('.toggle-visibility');
+            const editBtn = card.querySelector('.edit');
+            const deleteBtn = card.querySelector('.delete');
+            
+            if (toggleBtn) attachToggleVisibilityListener(toggleBtn);
+            if (editBtn) attachEditListener(editBtn);
+            if (deleteBtn) attachDeleteListener(deleteBtn);
+        }
+        
+        // 기존 카드에 리스너 추가
+        document.querySelectorAll('.record-card').forEach(card => {
+            attachCardListeners(card);
+        });
+        
+        // 폼 제출
+        activityForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = editingId.value;
+            const name = document.getElementById('activityName').value;
+            const content = document.getElementById('activityContent').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const url = document.getElementById('activityUrl').value;
+            
+            // 활동 구분 가져오기
+            let type = document.getElementById('activityType').value;
+            if (type === 'custom') {
+                type = document.getElementById('customType').value;
+            }
+            
+            // 활동 시기 가져오기
+            let semester = document.getElementById('activitySemester').value;
+            if (semester === 'custom') {
+                semester = document.getElementById('customSemester').value;
+            }
+            
+            // 기간 포맷팅
+            const startFormatted = formatDateForDisplay(startDate);
+            const endFormatted = formatDateForDisplay(endDate);
+            const period = `${startFormatted} ~ ${endFormatted}`;
+            
+            if (id) {
+                // 수정 모드
+                const card = document.querySelector(`.record-card[data-id="${id}"]`);
+                card.querySelector('h3').textContent = name;
+                card.querySelector('.record-type').textContent = type;
+                card.querySelector('.record-content').textContent = content;
+                
+                // 활동 기간과 활동 시기를 함께 표시
+                const periodSpan = card.querySelector('.record-period');
+                periodSpan.innerHTML = `${period} <span class="semester-info" style="color: #999;">(${semester})</span>`;
+                
+                const urlContainer = card.querySelector('div:last-child');
+                if (url) {
+                    urlContainer.innerHTML = `
+                        <span style="color: #666; font-size: 0.85rem;">URL: </span>
+                        <a href="${url}" class="record-url" target="_blank">${url}</a>
+                    `;
+                } else {
+                    urlContainer.innerHTML = '';
+                }
+            } else {
+                // 추가 모드
+                const newCard = document.createElement('div');
+                newCard.className = 'record-card';
+                newCard.setAttribute('data-id', nextId);
+                newCard.setAttribute('data-hidden', 'false');
+                nextId++;
+                
+                let urlHtml = '';
+                if (url) {
+                    urlHtml = `
+                        <div>
+                            <span style="color: #666; font-size: 0.85rem;">URL: </span>
+                            <a href="${url}" class="record-url" target="_blank">${url}</a>
+                        </div>
+                    `;
+                }
+                
+                newCard.innerHTML = `
+                    <div class="record-card-header">
+                        <h3>${name}</h3>
+                        <div class="card-actions">
+                            <button class="card-button toggle-visibility" title="공개/비공개">
+                                <svg viewBox="0 0 24 24">
+                                    <g class="eye-open">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M12 5c8 0 12 7 12 7s-4 7-12 7-12-7-12-7 4-7 12-7z"></path>
+                                    </g>
+                                    <g class="eye-closed">
+                                        <path d="M3 3l18 18M6 6c-1 1-2 2-3 3M18 18c1-1 2-2 3-3M12 5c8 0 12 7 12 7s-4 7-12 7-12-7-12-7 4-7 12-7z"></path>
+                                    </g>
+                                </svg>
+                            </button>
+                            <button class="card-button edit" title="수정">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
+                                    <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                                </svg>
+                            </button>
+                            <button class="card-button delete" title="삭제">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="record-meta">
+                        <span class="record-type">${type}</span>
+                        <span class="record-period">${period} <span class="semester-info" style="color: #999;">(${semester})</span></span>
+                    </div>
+                    <div class="record-content">${content}</div>
+                    ${urlHtml}
+                `;
+                
+                recordsGrid.insertBefore(newCard, recordsGrid.firstChild);
+                attachCardListeners(newCard);
+            }
+            
+            // 모달 닫기 및 폼 초기화
+            modal.classList.remove('active');
+            activityForm.reset();
+            editingId.value = '';
+            document.getElementById('customSemester').style.display = 'none';
+            document.getElementById('customType').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

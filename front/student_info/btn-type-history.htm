@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>이전 검사 기록</title>
+    <style>
+        :root{ 
+            --bg: #f4f7fb; 
+            --accent: #2b6cb0;
+            /* 검사 기록 카드 크기 조정 변수 */
+            --card-width: 40%;
+            --card-height: auto;
+            --card-min-height: 100px;
+            --card-padding: 20px;
+            --card-gap: 20px;
+        }
+        html, body { height: 100%; margin: 0; }
+        /* 전체 배경과 폰트 설정 */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        h1 { 
+            text-align: center; 
+            color: white; 
+            font-size: 2rem;
+            margin: 0 0 40px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        /* 검사 기록 카드 그리드 */
+        .records-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--card-gap);
+            margin-bottom: 40px;
+            justify-items: center;
+        }
+        /* 검사 기록 카드 스타일 */
+        .record-card {
+            background: #fff;
+            padding: var(--card-padding);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            width: var(--card-width);
+            height: var(--card-height);
+            min-height: var(--card-min-height);
+        }
+        /* 검사 날짜 글씨 스타일 */
+        .record-date {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        /* 검사 유형 글씨 스타일 */
+        .record-type {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2b6cb0;
+        }
+        /* 아래 내 정보로 돌아가기 버튼 컨테이너 */
+        .footer {
+            text-align: center;
+        }
+        .back {
+            display: inline-block;
+            background: #ffffff;
+            color: #000000;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(43,108,176,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔎 이전 검사 기록</h1>
+        
+        <div class="records-grid">
+            <!-- 검사 기록 카드 1 -->
+            <div class="record-card">
+                <div class="record-date">검사날짜: 2026.01.01</div>
+                <div class="record-type">A 유형</div>
+            </div>
+            
+            <!-- 검사 기록 카드 2 -->
+            <div class="record-card">
+                <div class="record-date">검사날짜: 2025.12.15</div>
+                <div class="record-type">B 유형</div>
+            </div>
+            
+            <!-- 검사 기록 카드 3 -->
+            <div class="record-card">
+                <div class="record-date">검사날짜: 2025.11.20</div>
+                <div class="record-type">A 유형</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="btn-myinfo.htm" class="back">← 내 정보로 돌아가기</a>
+        </div>
+    </div>
+</body>
+</html>

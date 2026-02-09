@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>학생 정보 수정</title>
+    <style>
+        :root{ --bg: #667eea; --card-bg: #ffffff; }
+        html, body { height: 100%; margin: 0; }
+        /* 전체 배경과 폰트 설정 */
+        body {
+            background: var(--bg);
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 60px;
+        }
+        /* 헤더 스타일 */
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+        /* 흰색 둥근네모 카드 */
+        .edit-card {
+            background: var(--card-bg);
+            width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        /* 사용자 입력 구간 스타일 */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; color: #667eea; font-weight: bold; margin-bottom: 8px; }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            box-sizing: border-box; /* 패딩이 너비를 넘지 않게 함 */
+            font-size: 1rem;
+            font-family: 'Malgun Gothic', sans-serif;
+        }
+        
+        /*입력창 누르면 테두리 색 변경*/
+        .input-group input:focus,
+        .input-group select:focus { outline: none; border-color: #667eea; }
+
+        /* 저장 버튼 스타일 */
+        .save-btn {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .save-btn:hover { background: #5566d6; }
+
+        .hidden { display: none; }
+        .grade-input-group { position: relative; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✏️ 정보 수정</h1>
+    </div>
+
+    <div class="edit-card">
+        <div class="input-group"><label>이름</label><input type="text" id="in-name" value="홍길동"></div>
+        <div class="input-group"><label>학교</label><input type="text" id="in-univ" value="성균관대학교"></div>
+        <div class="input-group"><label>학번</label><input type="text" id="in-id" value="2024310000"></div>
+        <div class="input-group"><label>학과</label><input type="text" id="in-dept" value="시스템경영공학과"></div>
+        <div class="input-group grade-input-group">
+            <label>학년</label>
+            <select id="in-grade" onchange="toggleGradeInput()">
+                <option value="1학년 1학기">1학년 1학기</option>
+                <option value="1학년 2학기">1학년 2학기</option>
+                <option value="2학년 1학기">2학년 1학기</option>
+                <option value="2학년 2학기">2학년 2학기</option>
+                <option value="3학년 1학기">3학년 1학기</option>
+                <option value="3학년 2학기">3학년 2학기</option>
+                <option value="4학년 1학기">4학년 1학기</option>
+                <option value="4학년 2학기">4학년 2학기</option>
+                <option value="직접 입력">직접 입력</option>
+            </select>
+            <input type="text" id="in-grade-custom" placeholder="예: 5학년 1학기" class="hidden" style="margin-top: 8px;">
+        </div>
+        <div class="input-group"><label>진로 및 관심분야</label><input type="text" id="in-career" value="데이터 사이언티스트"></div>
+        <div class="input-group">
+            <label>나의 유형</label>
+            <select id="in-type">
+                <option value="A 유형 (체계적 분석가)">A 유형 (체계적 분석가)</option>
+                <option value="B 유형 (창의적 개척자)">B 유형 (창의적 개척자)</option>
+                <option value="C 유형 (공감적 협력자)">C 유형 (공감적 협력자)</option>
+                <option value="D 유형 (신뢰할 수 있는 실행자)">D 유형 (신뢰할 수 있는 실행자)</option>
+            </select>
+        </div>
+
+        <button class="save-btn" onclick="saveData()">저장하기</button>
+    </div>
+
+    <script>
+        function toggleGradeInput() {
+            const gradeSelect = document.getElementById('in-grade');
+            const gradeCustom = document.getElementById('in-grade-custom');
+            
+            if (gradeSelect.value === '직접 입력') {
+                gradeCustom.classList.remove('hidden');
+            } else {
+                gradeCustom.classList.add('hidden');
+            }
+        }
+
+        /* 저장 버튼 클릭 시 데이터 로컬스토리지에 저장 */
+        function saveData() {
+            let gradeValue = document.getElementById('in-grade').value;
+            
+            // 기타 선택 시 직접 입력한 값 사용
+            if (gradeValue === '기타') {
+                gradeValue = document.getElementById('in-grade-custom').value;
+                if (!gradeValue.trim()) {
+                    alert('예: 5학년 1학기');
+                    return;
+                }
+            }
+
+            const data = {
+                name: document.getElementById('in-name').value,
+                univ: document.getElementById('in-univ').value,
+                id: document.getElementById('in-id').value,
+                dept: document.getElementById('in-dept').value,
+                grade: gradeValue,
+                type: document.getElementById('in-type').value,
+                career: document.getElementById('in-career').value
+            };
+            
+            // 브라우저 로컬 저장소에 저장
+            localStorage.setItem('studentData', JSON.stringify(data));
+            alert('정보가 수정되었습니다!');
+            location.href = 'btn-myinfo.htm'; // 다시 확인 페이지로 이동
+        }
+    </script>
+</body>
+</html>

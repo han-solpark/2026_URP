@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>학생 정보 기록</title>
+    <style>
+        :root{ --bg: #667eea; --card-bg: #ffffff; }
+        html, body { height: 100%; margin: 0; }
+        
+        body { /* 전체 배경과 폰트 설정 */
+            background: var(--bg);
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 60px;
+        }
+        
+        /* 헤더 스타일 */
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+        /* 흰색 둥근네모 카드 */
+        .info-card {
+            background: var(--card-bg);
+            width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            position: relative; /* 버튼 배치를 위해 설정 */
+        }
+
+        /* 오른쪽 위 수정 버튼 */
+        .edit-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* 정보 항목 스타일 - label, span(내용) */
+        .info-item { margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+        .info-item label { display: block; color: #667eea; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        .info-item span { font-size: 1.2rem; color: #333; }
+
+        .footer { /* 아래 이전으로 버튼 컨테이너 */
+            display: flex;
+            justify-content: center;
+            margin-top: 60px;
+            width: 100%;
+            padding-bottom: 40px;
+        }
+
+        /*아래 이전으로 버튼 스타일*/
+        .back-btn {
+            background: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover { /* 호버 효과 */
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .back-btn:active { transform: translateY(-1px); }
+        
+        /* 이전 검사 결과 기록 보기 버튼 */
+        .type-right { display: flex; align-items: center; gap: 12px; width: 100%; justify-content: space-between; }
+        .type-history-btn {
+            background: #2b6cb0;
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 10px rgba(43,108,176,0.18);
+            transition: all 0.15s ease;
+        }
+        .type-history-btn:hover { transform: translateY(-2px); background: #245f98; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>👤 나의 정보 기록</h1>
+    </div>
+
+    <!-- 흰색 카드 내용 -->
+    <div class="info-card">
+        <a href="btn-edit-myinfo.htm" class="edit-btn">수정</a>
+        <div class="info-item"><label>이름</label><span id="display-name">홍길동</span></div>
+        <div class="info-item"><label>학교</label><span id="display-univ">성균관대학교</span></div>
+        <div class="info-item"><label>학번</label><span id="display-id">2024310000</span></div>
+        <div class="info-item"><label>학과</label><span id="display-dept">시스템경영공학과</span></div>
+        <div class="info-item"><label>학년</label><span id="display-grade">2학년 1학기</span></div>
+        <div class="info-item"><label>진로 및 관심분야</label><span id="display-career">데이터 사이언티스트</span></div>
+        <div class="info-item">
+            <label>나의 유형</label>
+            <div class="type-right">
+                <span id="display-type">A 유형 (체계적 분석가)</span>
+                <a href="btn-type-history.htm" class="type-history-btn">이전 검사 기록 보기</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 이전으로 버튼 -->
+    <div class="footer">
+        <a href="btn-student-info.htm" class="back-btn">← 이전으로</a>
+    </div>
+
+    <!-- 수정 페이지에서 저장한 데이터 불러와서 화면에 표시 - localStorage 활용 -->
+    <script>
+        window.onload = function() {
+            //localStorage.removeItem('studentData'); //테스트용 초기화
+            const studentData = JSON.parse(localStorage.getItem('studentData'));
+            if(studentData) {
+                document.getElementById('display-name').innerText = studentData.name;
+                document.getElementById('display-univ').innerText = studentData.univ;
+                document.getElementById('display-id').innerText = studentData.id;
+                document.getElementById('display-dept').innerText = studentData.dept;
+                document.getElementById('display-grade').innerText = studentData.grade;
+                document.getElementById('display-type').innerText = studentData.type;
+                document.getElementById('display-career').innerText = studentData.career;
+            }
+        };
+    </script>
+</body>
+</html>
