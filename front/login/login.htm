@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            padding: 50px 40px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Malgun Gothic', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .remember-me input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .remember-me label {
+            margin: 0;
+            color: #666;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            font-family: 'Malgun Gothic', sans-serif;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .login-footer p {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .login-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .login-footer a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .link-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.85rem;
+        }
+
+        .link-group a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .link-group a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                max-width: 100%;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .login-header {
+                margin-bottom: 25px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>LOGIN</h1>
+            <p>로그인하여 시작하세요</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">아이디</label>
+                <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
+                <div class="error-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">로그인 상태 유지</label>
+            </div>
+
+            <button type="submit" class="login-button">로그인</button>
+        </form>
+
+        <div class="login-footer">
+            <p>아직 계정이 없으신가요?</p>
+            <div class="link-group">
+                <a href="sign-up.htm">회원가입</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+
+        // 페이지 로드 시 저장된 아이디가 있으면 불러오기
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUsername = localStorage.getItem('savedUsername');
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            
+            if (rememberMe && savedUsername) {
+                usernameInput.value = savedUsername;
+                rememberMeCheckbox.checked = true;
+            }
+        });
+
+        // 폼 제출 이벤트
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            // 기본 유효성 검사
+            let isValid = true;
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+            if (!username) {
+                document.getElementById('usernameError').textContent = '아이디를 입력하세요';
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!password) {
+                document.getElementById('passwordError').textContent = '비밀번호를 입력하세요';
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // 로그인 상태 저장 (실제 서버 통신은 별도로 구현 필요)
+            if (rememberMeCheckbox.checked) {
+                localStorage.setItem('savedUsername', username);
+                localStorage.setItem('rememberMe', 'true');
+            } else {
+                localStorage.removeItem('savedUsername');
+                localStorage.setItem('rememberMe', 'false');
+            }
+
+            // 로그인 성공 처리 (sessionStorage에 로그인 상태 저장)
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('currentUser', username);
+
+            // 메인 페이지로 이동
+            alert('로그인되었습니다!');
+            window.location.href = '../index_v2.htm';
+        });
+
+        // Enter 키로도 로그인 가능
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

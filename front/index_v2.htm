@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기본 페이지</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            /* 화면 전체 중앙 정렬 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 흰 박스 스타일 */
+        .container {
+            background-color: rgb(255, 255, 255);
+            padding: 60px; /* 내부 여백 조정 */
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 900px; /* 버튼이 커진 만큼 컨테이너도 조금 넓힘 */
+            width: 90%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 50px;
+            font-size: 2rem;
+        }
+
+        /* 버튼들을 감싸는 그리드 영역 */
+        .menu-grid {
+            display: flex;         /* 가로 정렬 */
+            justify-content: center; 
+            gap: 25px;             /* 버튼 사이 간격 */
+        }
+
+        /* 각 버튼(상자) 스타일 */
+        .menu-item {
+            flex: 1;               /* 세 버튼이 동일한 가로 너비를 가짐 */
+            background-color: #667eea;
+            color: white;
+            
+            /* 핵심: 세로 두께를 위해 상하 padding을 80px로 크게 설정 */
+            padding: 80px 20px;    
+            
+            text-align: center;
+            border-radius: 15px;
+            text-decoration: none;
+            font-size: 22px;       /* 상자가 커진 만큼 글씨 크기도 키움 */
+            font-weight: bold;
+            transition: all 0.3s ease;
+            
+            /* 버튼 내부 글자를 정중앙에 배치 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 마우스 올렸을 때 효과 */
+        .menu-item:hover {
+            background-color: #5568d3;
+            transform: translateY(-8px); /* 위로 슥 올라가는 효과 */
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e38383;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-row">
+            <h1>로드맵 추천 시스템</h1>
+            <button id="logoutBtn" class="logout-btn">로그아웃</button>
+        </div>
+        <div class="menu-grid">
+            <a href="test.htm" class="menu-item">유형검사</a>
+            <a href="student_info/btn-student-info.htm" class="menu-item">학생정보 입력</a>
+            <a href="roadmap/roadmap_v2.htm" class="menu-item">로드맵 추천</a>
+        </div>
+    </div>
+    <script>
+        // 로그아웃 버튼 동작: 로그인 상태일 때만 표시, 클릭 시 세션 정리 후 로그인 페이지로 이동
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+            if (!logoutBtn) return;
+            if (isLoggedIn) {
+                logoutBtn.style.display = 'inline-block';
+            }
+            logoutBtn.addEventListener('click', function() {
+                sessionStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('currentUser');
+                alert('로그아웃되었습니다.');
+                window.location.href = 'login/login.htm';
+            });
+        });
+    </script>
+</body>
+</html>
