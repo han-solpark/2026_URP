@@ -5,6 +5,8 @@ from schema.request import ResultReportRequest
 import requests
 from dotenv import load_dotenv
 import time
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs
 
 class UserService:
     @staticmethod
@@ -45,8 +47,36 @@ class UserService:
         except:
             raise
 
+    @staticmethod
+    def parse_result(result_url:str):
+        # 1. seq 추출
+        parsed = urlparse(result_url)
+        seq = parse_qs(parsed.query).get("seq", [None])[0]
 
-    #def parse_result(self, result_url:str) -> int[9]:
+        if not seq:
+            raise ValueError("Invalid result_url: seq 없음")
+
+        base_url = "https://www.career.go.kr"
+
+        res = requests.get(
+            f"https://www.career.go.kr/cloud/api/inspect/report",
+            params={"seq": seq}
+        )
+        res.raise_for_status()
+
+        report = res.json()
+
+        # 3. 주요능력 + T점수 바로 추출
+        result = {}
+
+        for i in range(1, 10):
+            name = report.get(f"code{i}nm")
+            t = report.get(f"t{i}")
+
+            if name and t is not None:
+                result[name] = int(t)
+
+        return result
 
 if __name__ == "__main__":
     # AI 사용 랜덤 답변 샘플 생성
@@ -58,6 +88,8 @@ if __name__ == "__main__":
 
     print("🚀 커리어넷 API 요청을 시작합니다...")
     result_url = UserService.request_result_report(sample_data)
+    parse = UserService.parse_result(result_url)
     
     print("\n[최종 결과]")
     print(result_url)
+    print(parse)
