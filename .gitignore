@@ -1,0 +1,16 @@
+
+# Python 관련
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Database 데이터 (가장 중요!)
+back/mysql_data/
+
+# OS/IDE 관련
+.DS_Store
+.vscode/
+
+# 환경 변수 (비밀번호 포함 가능성)
+.env
