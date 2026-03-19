@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body{
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            /* 화면 전체 중앙 정렬 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* [추가] Flex 중앙 정렬이 제대로 작동하기 위해 화면 높이 설정 */
+            height: 100vh;
+        }
+        home{
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgb(255, 255, 255);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            /* [추가] 네비게이션이 콘텐츠 위에 오도록 z-index 설정 */
+            z-index: 1000;
+        }
+        home a {
+            text-decoration: none;
+            color: inherit;
+        }
+        home button{
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            width: 100px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50px;
+            font-size: 13px;
+            cursor: pointer;
+            /* [추가] 호버 효과 시 부드러운 전환 */
+            transition: background-color 0.3s ease;
+        }
+         home button:hover {
+            background-color: #97cfc9;
+        }
+        #home-btn {
+            background-color: #97cfc9;
+            color: rgb(0, 0, 0);
+            border-radius: 50px;
+        }
+        #home-btn:hover {
+            background-color: #97cfc9;
+        }
+        
+        /* ---------------------------------------------------- */
+        /* [수정 및 추가] 가운데 디자인을 위한 핵심 스타일 */
+        /* ---------------------------------------------------- */
+        .content {
+            /* [수정] flex를 이용해 콘텐츠를 세로 방향 중앙 정렬 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            
+            width: 80%;
+            max-width: 800px; /* 너무 넓어지지 않도록 최대 폭 설정 */
+            
+            /* [수정] 상단 네비게이션 공간 확보 */
+            margin-top: 100px;
+            padding: 20px;
+            
+            /* [추가] 화살표 배치를 위한 상대적 위치 설정 */
+            position: relative;
+        }
+
+        /* 퀀텀 로고 필기체 스타일 */
+        .logo-text {
+            font-family: 'Caveat', cursive; /* 연결한 구글 폰트 적용 */
+            font-size: 110px; /* 과감하게 크게 설정 */
+            font-weight: bold;
+            color: #000;
+            margin: 0;
+            margin-bottom: 20px;
+            line-height: 1; /* 글자 간 세로 간격 좁히기 */
+        }
+
+        /* 메인 태그라인 (볼드 sans-serif) */
+        .main-tagline {
+            font-family: 'Malgun Gothic', sans-serif;
+            font-size: 30px; /* 손그림 느낌의 굵고 큰 폰트 */
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+            margin-bottom: 15px;
+        }
+
+        /* 서브 태그라인 (일반 sans-serif) */
+        .sub-tagline {
+            font-family: 'Malgun Gothic', sans-serif;
+            font-size: 17px;
+            font-weight: normal;
+            color: #666; /* 살짝 연한 회색 */
+            margin: 0;
+            margin-bottom: 40px;
+            line-height: 1.6; /* 가독성을 위한 줄 간격 */
+        }
+
+        /* 손그림 속 '화살표' 배치 (Carousel 느낌) */
+        
+
+    </style>
+</head>
+
+<body> 
+    <home>
+        <a href="home.htm"><button id="home-btn"><h3>Home</h3></button></a>
+        <a href="myinfo.htm"><button><h3>나의 기록</h3></button></a> 
+        <a href="recommend.htm"><button><h3>활동 추천</h3></button></a>
+        <a href="roadmap.htm"><button><h3>로드맵</h3></button></a>
+    </home>
+
+    <div class="content">
+
+        <h1 class="logo-text">QUANTUM</h1>
+
+        <p class="main-tagline">더 큰 도약을 위한 당신만의 네비게이션</p>
+
+        <p class="sub-tagline">지나온 경험을 기록하고, 데이터 기반의 맞춤 활동을 제안합니다.</p>
+    </div>
+
+</body>
+</html>
