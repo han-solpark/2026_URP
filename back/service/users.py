@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     print("🚀 커리어넷 API 요청을 시작합니다...")
     result_url = UserService.request_result_report(sample_data)
-    parse = UserService.parse_result(result_url)
+    parse = UserService.parse_aresult(result_url)
     
     print("\n[최종 결과]")
     print(result_url)

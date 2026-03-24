@@ -9,6 +9,7 @@ __pycache__/
 
 # env files
 .env
+*.csv
 
 # OS files
 .DS_Store
