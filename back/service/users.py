@@ -8,10 +8,15 @@ import time
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
 
+import google.genai as genai
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+LLM_KEY = os.getenv("LLM_KEY")
+
 class UserService:
     @staticmethod
     def request_result_report(request: ResultReportRequest) -> str:
-        load_dotenv(Path(__file__).resolve().parents[2] / ".env")
         CAREERNET_KEY = os.getenv("CAREERNET_KEY")
 
         # 1. API 엔드포인트 URL
@@ -48,6 +53,20 @@ class UserService:
             raise
 
     @staticmethod
+    def call_llm(prompt: str):
+        client = genai.Client(api_key = LLM_KEY)
+
+        try:
+            response = client.models.generate_content(
+                model='gemini-3-flash-preview', 
+                contents=prompt
+            )
+            return response.text.strip()
+        
+        except Exception as e:
+            return f"에러가 발생했습니다: {str(e)}"
+
+    @staticmethod
     def parse_result(result_url:str):
         # 1. seq 추출
         parsed = urlparse(result_url)
@@ -55,8 +74,6 @@ class UserService:
 
         if not seq:
             raise ValueError("Invalid result_url: seq 없음")
-
-        base_url = "https://www.career.go.kr"
 
         res = requests.get(
             f"https://www.career.go.kr/cloud/api/inspect/report",
