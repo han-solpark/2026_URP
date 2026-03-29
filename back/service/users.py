@@ -3,16 +3,20 @@ import os
 from pathlib import Path
 from schema.request import ResultReportRequest
 import requests
+from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 import time
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
+from torch import *
 
-import google.genai as genai
 from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 LLM_KEY = os.getenv("LLM_KEY")
+
+model = SentenceTransformer(
+            "snunlp/KR-SBERT-V40K-klueNLI-augSTS"
+        )
 
 class UserService:
     @staticmethod
@@ -52,20 +56,16 @@ class UserService:
         except:
             raise
 
-    @staticmethod
-    def call_llm(prompt: str):
-        client = genai.Client(api_key = LLM_KEY)
+    @staticmethod # 선호 활동 문장 임베딩 용도
+    def embedding(text: str):
 
-        try:
-            response = client.models.generate_content(
-                model='gemini-3-flash-preview', 
-                contents=prompt
-            )
-            return response.text.strip()
-        
-        except Exception as e:
-            return f"에러가 발생했습니다: {str(e)}"
-
+        embedded = model.encode(
+                    text,  # 임베딩할 대상
+                    convert_to_tensor=True,       # PyTorch Tensor
+                    normalize_embeddings=True # 정규화
+                   )
+        return embedded
+    
     @staticmethod
     def parse_result(result_url:str):
         # 1. seq 추출

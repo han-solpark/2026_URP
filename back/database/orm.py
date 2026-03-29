@@ -11,7 +11,7 @@ class Activity(Base):
     name = Column(String(200), unique=True, nullable=False)
     detail = Column(Text)
     category = Column(String(50))
-    keyword = Column(JSON) 
+    embedded = Column(JSON) 
     year = Column(String(10))
     persistence = Column(String(10))
     written_date = Column(Date)
