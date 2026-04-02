@@ -1,0 +1,261 @@
+.my-info-page {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: calc(100vh - 70px);
+  background-color: #fff;
+  padding: 60px 20px 60px 80px;
+}
+
+.my-info-container {
+  display: flex;
+  width: 100%;
+  max-width: 1400px;
+  position: relative;
+}
+
+/* 중앙 수직선 */
+.my-info-container::after {
+  display: none;
+}
+
+.left-panel {
+  flex: 0 0 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: transparent;
+  padding: 0 40px 0 0;
+  text-align: left;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.title-row h2 {
+  margin: 0;
+}
+
+.edit-toggle-btn {
+  padding: 6px 16px;
+  background-color: #f0f2f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.edit-toggle-btn:hover {
+  background-color: #e1e4e8;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #f3f4f6;
+  width: 100%;
+  max-width: 350px;
+}
+
+.info-tag {
+  background-color: #3b82f6;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  min-width: 60px;
+  text-align: center;
+}
+
+.info-text {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.grade-select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.grade-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.left-panel h2, .right-panel h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 700;
+}
+
+.section-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-item label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.info-item input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.info-item input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.edit-btn {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.activity-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.activity-input-section input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.add-activity-btn {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-list li {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #444;
+}
+
+.activity-list li:last-child {
+  border-bottom: none;
+}
+
+.result-card, .no-result-card {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.chart-placeholder {
+  height: 400px;
+  width: 100%;
+  min-width: 600px;
+  background-color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  color: #64748b;
+  font-weight: 600;
+  border: 2px dashed #cbd5e1;
+}
+
+.result-card button, .no-result-card button {
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .my-info-container {
+    flex-direction: column;
+  }
+}

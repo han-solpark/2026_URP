@@ -1,0 +1,42 @@
+.main-page-with-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px); /* 헤더 높이 제외 */
+  text-align: center;
+  background-color: #fff;
+}
+
+.main-logo-section {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.home-main-logo {
+  width: 80%; /* Increased from 50% to make it significantly larger */
+  max-width: 1000px;
+  height: auto;
+}
+
+.main-description-section {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.description-subtitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.description-paragraph {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
