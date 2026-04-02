@@ -3,15 +3,24 @@ import os
 from pathlib import Path
 from schema.request import ResultReportRequest
 import requests
+from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 import time
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
+from torch import *
+
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+LLM_KEY = os.getenv("LLM_KEY")
+
+model = SentenceTransformer(
+            "snunlp/KR-SBERT-V40K-klueNLI-augSTS"
+        )
 
 class UserService:
     @staticmethod
     def request_result_report(request: ResultReportRequest) -> str:
-        load_dotenv(Path(__file__).resolve().parents[2] / ".env")
         CAREERNET_KEY = os.getenv("CAREERNET_KEY")
 
         # 1. API 엔드포인트 URL
@@ -47,6 +56,16 @@ class UserService:
         except:
             raise
 
+    @staticmethod # 선호 활동 문장 임베딩 용도
+    def embedding(text: str):
+
+        embedded = model.encode(
+                    text,  # 임베딩할 대상
+                    convert_to_tensor=True,       # PyTorch Tensor
+                    normalize_embeddings=True # 정규화
+                   )
+        return embedded
+    
     @staticmethod
     def parse_result(result_url:str):
         # 1. seq 추출
@@ -55,8 +74,6 @@ class UserService:
 
         if not seq:
             raise ValueError("Invalid result_url: seq 없음")
-
-        base_url = "https://www.career.go.kr"
 
         res = requests.get(
             f"https://www.career.go.kr/cloud/api/inspect/report",
@@ -88,7 +105,7 @@ if __name__ == "__main__":
 
     print("🚀 커리어넷 API 요청을 시작합니다...")
     result_url = UserService.request_result_report(sample_data)
-    parse = UserService.parse_result(result_url)
+    parse = UserService.parse_aresult(result_url)
     
     print("\n[최종 결과]")
     print(result_url)

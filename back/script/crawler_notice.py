@@ -23,7 +23,7 @@ def save_notices(notices):
     try:
         for item in notices: # notices는 name url detail로 구성
             # 2. 중복 체크 (URL 기준)
-            exists = session.query(Activity).filter(Activity.url == item['url']).first()
+            exists = session.query(Activity).filter(Activity.name == item['name']).first()
             
             if not exists:
                 new_row = Activity(**item) 
@@ -122,6 +122,7 @@ def crawl_skku_notice():
                 "name": title,
                 "url": link,
                 "detail": detail_text[:200] + "...", # DB 용량 고려 일부만 저장
+                "category": "notice",
                 "written_date": written_date
             })
             
