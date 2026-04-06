@@ -38,10 +38,3 @@ def user_log_in_handler(request: LogInRequest, user_repo: UserRepository = Depen
     access_token: str = user_service.create_jwt(user.username)
     # 5. return jwt
     return JWTResponse(access_token=access_token)
-
-# OTP 작업하기
-# 회원가입(username, password) / 로그인
-# 이메일 알림: 회원가임 -> 이메일인증(otp) -> 유저 이메일 저장 -> 이메일 알림
-
-# POST /users/email/otp -> otp(key: email, value: 1234, exp: 3min)
-# POST /users/email/otp/verify -> request(email, otp) -> user(email)

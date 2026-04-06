@@ -24,8 +24,8 @@ class RecommendationService:
         
         except Exception as e:
             return f"에러가 발생했습니다: {str(e)}"
-        
-    @staticmethod # 추천해서 실제로 어떤 활동 추천하는 지랑 활동 스코어 인덱스 5개 추출
+    
+    # 추천해서 실제로 어떤 활동 추천하는 지랑 활동 스코어 인덱스 5개 추출
     def get_recommendations(self, student_emb, activity_embeddings, top_k=5):
         cosine_scores = cos_sim(student_emb, activity_embeddings)
         scores = cosine_scores[0]
