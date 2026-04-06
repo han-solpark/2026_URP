@@ -4,7 +4,7 @@
   align-items: flex-start;
   min-height: calc(100vh - 70px);
   background-color: #fff;
-  padding: 60px 20px 60px 80px;
+  padding: 60px 20px 60px 60px;
 }
 
 .my-info-container {
@@ -48,7 +48,7 @@
 .title-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; 
   margin-bottom: 30px;
 }
 
@@ -74,25 +74,25 @@
 
 .info-row {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 15px;
-  padding: 10px 15px;
+  padding: 12px 16px;
   background-color: #f9fafb;
   border-radius: 8px;
   border: 1px solid #f3f4f6;
   width: 100%;
-  max-width: 350px;
+  max-width: 380px;
 }
 
 .info-tag {
   background-color: #3b82f6;
   color: white;
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: 8px 0;
+  border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 700;
-  min-width: 60px;
+  width: 90px;
+  min-width: 90px;
   text-align: center;
 }
 
@@ -134,12 +134,16 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
 .info-item label {

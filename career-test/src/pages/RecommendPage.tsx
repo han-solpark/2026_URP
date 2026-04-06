@@ -59,6 +59,11 @@ const RecommendPage = () => {
   const [isRecommended, setIsRecommended] = useState(false);
   const [preferredSentence, setPreferredSentence] = useState('');
   const [heartedIds, setHeartedIds] = useState<number[]>([]);
+  
+  // Weights for recommendations
+  const [prefWeight, setPrefWeight] = useState(50);
+  const [activityWeight, setActivityWeight] = useState(50);
+  const [typeWeight, setTypeWeight] = useState(50);
 
   const keywords = ['데이터 분석', 'AI 연구', '웹 개발', '기획', '디자인', '마케팅', '문제 해결', '프로젝트 매니징'];
 
@@ -68,6 +73,19 @@ const RecommendPage = () => {
       setHeartedIds(JSON.parse(saved));
     }
   }, []);
+
+  // Handle browser-level page leave confirmation (refresh, close tab)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isRecommended) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isRecommended]);
 
   const toggleHeart = (id: number) => {
     const newHearted = heartedIds.includes(id)
@@ -89,8 +107,6 @@ const RecommendPage = () => {
       alert('관심 있는 활동이나 목표를 최소 5자 이상 적어주세요.');
       return;
     }
-    // 실제 서비스라면 여기서 입력을 서버로 보내서 AI 추천을 받겠지만,
-    // 현재는 목업 데이터(MOCK_RECOMMENDATIONS)를 보여줍니다.
     setIsRecommended(true);
   };
 
@@ -133,9 +149,46 @@ const RecommendPage = () => {
       <div className="recommend-header">
         <button className="back-btn" onClick={handleBack}>← 다시 입력하기</button>
         <h2>맞춤 활동 추천 결과</h2>
-        <div className="warning-banner">
-          ⚠️ 현재 페이지를 나가면 추천 결과를 다시 확인할 수 없으니, 관심 있는 활동은 미리 하트(❤️)를 눌러 저장해 주세요!
+        
+        <div className="weight-control-container">
+          <h3 className="weight-control-title">반영 비율 조정</h3>
+          <div className="weight-sliders">
+            <div className="weight-slider-item">
+              <label>선호 문장</label>
+              <input 
+                type="range" 
+                min="1" 
+                max="100" 
+                value={prefWeight} 
+                onChange={(e) => setPrefWeight(Number(e.target.value))} 
+              />
+              <span className="weight-value">{prefWeight}</span>
+            </div>
+            <div className="weight-slider-item">
+              <label>과거 활동</label>
+              <input 
+                type="range" 
+                min="1" 
+                max="100" 
+                value={activityWeight} 
+                onChange={(e) => setActivityWeight(Number(e.target.value))} 
+              />
+              <span className="weight-value">{activityWeight}</span>
+            </div>
+            <div className="weight-slider-item">
+              <label>유형 결과</label>
+              <input 
+                type="range" 
+                min="1" 
+                max="100" 
+                value={typeWeight} 
+                onChange={(e) => setTypeWeight(Number(e.target.value))} 
+              />
+              <span className="weight-value">{typeWeight}</span>
+            </div>
+          </div>
         </div>
+
         <div className="test-summary">
           <p>입력하신 문장: <strong>"{preferredSentence}"</strong></p>
           <p>분석된 키워드: 데이터 분석, 서비스 기획, 문제 해결</p>

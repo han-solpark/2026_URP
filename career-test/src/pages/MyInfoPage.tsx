@@ -11,7 +11,6 @@ const MyInfoPage = () => {
   const [userInfo, setUserInfo] = useState({
     id: 'user123',
     name: '김민채',
-    university: '한국대학교',
     grade: '3학년'
   });
 
@@ -76,25 +75,6 @@ const MyInfoPage = () => {
                 <div className="info-row">
                   <span className="info-tag">이름:</span>
                   <span className="info-text">{userInfo.name}</span>
-                </div>
-              )}
-            </div>
-            <div className="info-item">
-              {isEditing ? (
-                <>
-                  <label>대학교</label>
-                  <input 
-                    type="text" 
-                    name="university" 
-                    value={userInfo.university} 
-                    onChange={handleInfoChange} 
-                    placeholder="대학교를 입력하세요"
-                  />
-                </>
-              ) : (
-                <div className="info-row">
-                  <span className="info-tag">대학교:</span>
-                  <span className="info-text">{userInfo.university}</span>
                 </div>
               )}
             </div>

@@ -19,13 +19,13 @@ const LoginPage = () => {
         <h2 className="auth-subtitle">LOGIN</h2>
         
         <form onSubmit={handleLogin} className="auth-form">
-          <div className="input-group">
+          <div className="input-group inline-group">
             <label htmlFor="userId">아이디</label>
-            <input type="text" id="userId" placeholder="아이디를 입력하세요" />
+            <input type="text" id="userId" placeholder="아이디" required />
           </div>
-          <div className="input-group">
-            <label htmlFor="userPassword">비번</label>
-            <input type="password" id="userPassword" placeholder="비밀번호를 입력하세요" />
+          <div className="input-group inline-group">
+            <label htmlFor="userPassword">비밀번호</label>
+            <input type="password" id="userPassword" placeholder="비밀번호" required />
           </div>
           
           <button type="submit" className="login-btn">로그인</button>

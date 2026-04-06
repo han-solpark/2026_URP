@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage'; // 로그인 페이지 추가
@@ -10,11 +10,15 @@ import RoadmapPage from './pages/RoadmapPage';
 import PastActivitiesPage from './pages/PastActivitiesPage';
 import './App.css';
 
-function App() {
+const AppContent = () => {
+  const location = useLocation();
+  const hideHeaderPaths = ['/login', '/signup'];
+  const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
+
   return (
-    <Router>
-      <Header />
-      <div className="container">
+    <>
+      {!shouldHideHeader && <Header />}
+      <div className={shouldHideHeader ? "" : "container"}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
@@ -26,6 +30,14 @@ function App() {
           <Route path="/past-activities" element={<PastActivitiesPage />} />
         </Routes>
       </div>
+    </>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

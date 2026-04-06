@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   background-color: #f4f7f9;
 }
 
@@ -17,7 +17,31 @@
 }
 
 .large-auth-box {
-  max-width: 450px; /* 회원가입은 좀 더 크게 */
+  max-width: 500px; /* 회원가입은 좀 더 크게 */
+}
+
+.input-group-container {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.input-group-container .input-group {
+  margin-bottom: 5px;
+}
+
+.id-message {
+  font-size: 0.8rem;
+  text-align: left;
+  margin-left: 95px; /* label(80px) + gap(15px) */
+  font-weight: 600;
+}
+
+.success-msg {
+  color: #10b981; /* 초록색 */
+}
+
+.error-msg {
+  color: #ef4444; /* 빨간색 */
 }
 
 .auth-title {
@@ -42,20 +66,60 @@
 .input-group {
   margin-bottom: 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group.inline-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
 }
 
 .input-group label {
-  display: block;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #555;
-  margin-bottom: 8px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.input-group.inline-group label {
+  width: 80px;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.input-with-button {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+.check-duplicate-btn {
+  padding: 8px 12px;
+  background-color: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.85rem;
   font-weight: 600;
-  text-align: center;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.check-duplicate-btn:hover {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
 }
 
 .input-group input, 
 .input-group select {
-  width: 100%;
+  flex: 1;
   padding: 12px 15px;
   border: 2px solid #eef2f6;
   border-radius: 12px;
