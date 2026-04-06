@@ -28,11 +28,15 @@ def update_year():
             category = row.category
 
             prompt = f"""
-            다음 활동이 대학교 학부생 몇 학년에게 적합할지 다음과 같은 문자열 형식으로 반환해줘.
-            1학년이면 1, 2학년이면 2, 3학년이면 3, 4학년이면 4, 모든 학년에게 상관이 없으면 ALL
-            설명 없이 딱 한 단어만 출력해. 1, 2, 3, 4, ALL 중 딱 하나로만.
-            결과물은 반드시 영문 기준 10자 이내여야 한다. 만약 결과가 10자를 넘을 것 같으면 ERROR라고 대답해.
-            예시는 다음과 같아.
+            Return the following string format indicating which undergraduate year the following activity is suitable for:
+
+            1 for 1st year, 2 for 2nd year, 3 for 3rd year, 4 for 4th year, or ALL for all years.
+
+            Output exactly one word without any description. Only one of 1, 2, 3, 4, or ALL.
+
+            The result must be within 10 characters in English. If the result is likely to exceed 10 characters, answer ERROR.
+            
+            The example is as follows.
             [입력] OO 기사 자격증 [출력] 4
             [입력] OO 공모전 [출력] 3
             [입력] OO 직원 채용 [출력] 4

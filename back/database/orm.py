@@ -18,3 +18,19 @@ class Activity(Base):
 
     def __repr__(self): # java toString 같은 역할
         return f"<Activity(id={self.id}, name='{self.name}')>"
+    
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(String(20), primary_key=True)
+    password = Column(String(20), nullable=False)
+    name = Column(String(20), comment="이름")
+    year = Column(Integer, comment="학기")
+    ability = Column(JSON, comment="검사 결과 능력")
+    ability_url = Column(String(100))
+    preference = Column(JSON, comment="선호 문장을 벡터로 치환한 데이터")
+    preference_char = Column(JSON, comment="선호 문장 키워드 문자")
+
+    def __repr__(self):
+        # 자바의 toString 같은 역할
+        return f"<User(id='{self.id}', name='{self.name}')>"

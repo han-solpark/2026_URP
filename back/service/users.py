@@ -9,7 +9,10 @@ import time
 from urllib.parse import urlparse, parse_qs
 from torch import *
 
-from dotenv import load_dotenv
+import bcrypt
+from datetime import datetime, timedelta
+from jose import jwt
+import random
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 LLM_KEY = os.getenv("LLM_KEY")
@@ -19,8 +22,29 @@ model = SentenceTransformer(
         )
 
 class UserService:
-    @staticmethod
-    def request_result_report(request: ResultReportRequest) -> str:
+    encoding = "UTF-8"
+    secret_key = "05383d6bcf5516e8814cd26540c777061aa4e84e70d2a4b84f99e1af17faee50"
+    # 이 토큰이 서버가 직접 발급했고, 중간에 위·변조되지 않았다는 것을 증명하기 위한 비밀 키
+    # 스택 카나리 느낌이라고 생각하기
+    # secret_key를 아는 주체만 올바른 서명 생성 가능
+    def hash_password(self, plain_password:str) ->str:
+        hashed_password: bytes = bcrypt.hashpw(plain_password.encode(self.encoding), salt=bcrypt.gensalt())
+        return hashed_password.decode(self.encoding)
+
+    def verify_password(self, plain_password:str, hashed_password:str) -> bool:
+        return bcrypt.checkpw(plain_password.encode(self.encoding), hashed_password.encode(self.encoding))
+
+    def create_jwt(self, username: str) -> str:
+        return jwt.encode({
+            "sub": username,
+            "exp": datetime.now() + timedelta(days=1),
+        }, self.secret_key, algorithm="HS256")
+
+    def decode_jwt(self, access_token:str) -> str:
+        payload: dict = jwt.decode(access_token, self.secret_key, algorithms=["HS256"])
+        return payload["sub"]
+
+    def request_result_report(self, request: ResultReportRequest) -> str:
         CAREERNET_KEY = os.getenv("CAREERNET_KEY")
 
         # 1. API 엔드포인트 URL
@@ -56,8 +80,8 @@ class UserService:
         except:
             raise
 
-    @staticmethod # 선호 활동 문장 임베딩 용도
-    def embedding(text: str):
+    # 선호 활동 문장 임베딩 용도
+    def embedding(self, text: str):
 
         embedded = model.encode(
                     text,  # 임베딩할 대상
@@ -66,8 +90,7 @@ class UserService:
                    )
         return embedded
     
-    @staticmethod
-    def parse_result(result_url:str):
+    def parse_result(self, result_url:str):
         # 1. seq 추출
         parsed = urlparse(result_url)
         seq = parse_qs(parsed.query).get("seq", [None])[0]
@@ -94,7 +117,7 @@ class UserService:
                 result[name] = int(t)
 
         return result
-
+"""
 if __name__ == "__main__":
     # AI 사용 랜덤 답변 샘플 생성
     sample_data = ResultReportRequest(
@@ -110,3 +133,4 @@ if __name__ == "__main__":
     print("\n[최종 결과]")
     print(result_url)
     print(parse)
+"""

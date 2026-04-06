@@ -18,13 +18,14 @@ def toSQL1():
         print(df.head())
 
         certifications = df['종목명']
+        details = df['설명']
         source = []
         seen_names = set()
         for i in range(len(certifications)):
             if len(certifications[i].split("_")) > 1:
                 certifications[i] = certifications[i].split("_")[0] + " " + certifications[i].split("_")[1]
             if certifications[i] not in seen_names:
-                source.append({"name": certifications[i], "category": "certification", "persistence":"long"})
+                source.append({"name": certifications[i], "category": "certification", "detail": details[i], "persistence":"long"})
                 seen_names.add(certifications[i])
                 print("log:", source)
         
@@ -52,11 +53,11 @@ def toSQL2():
     csv_path = os.path.join(current_dir, '..', 'data', 'certification2.csv')
 
     try:
-        df = pd.read_csv(csv_path, encoding='cp949')
+        df = pd.read_csv(csv_path, encoding='utf-8')
         print("CSV 로드 성공!")
         print(df.head())
 
-        certifications = df[['자격종목', '등급']]
+        certifications = df[['자격종목', '등급', '설명']]
         source = []
         seen_names = set()
         for i in range(len(certifications)):
@@ -64,14 +65,14 @@ def toSQL2():
             for j in certifications['등급'][i].split(", "):
                 if j == "등급없음" or j == "단일등급":
                     if name not in seen_names:
-                        source.append({"name": name, "category": "certification", "persistence":"long"})
+                        source.append({"name": name, "category": "certification", "detail":certifications['설명'][i], "persistence":"long"})
                         seen_names.add(name)
                         print("log:", source)
                         
                 else:
                     new_name = name + " " + j
                     if new_name not in seen_names:
-                        source.append({"name": new_name, "category": "certification", "persistence":"long"})
+                        source.append({"name": new_name, "category": "certification", "detail":certifications['설명'][i], "persistence":"long"})
                         seen_names.add(new_name)
                         print("log:", source)
 

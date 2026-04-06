@@ -11,3 +11,11 @@ class ResultReportRequest(BaseModel): # 심리검사 결과 레포트 요청 스
     grade: str           
     startDtm: int = "" 
     answers: str         
+
+class SignUpRequest(BaseModel):
+    username: str
+    password: str
+
+class LogInRequest(BaseModel):
+    username: str
+    password: str
