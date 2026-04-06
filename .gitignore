@@ -10,6 +10,8 @@ venv/
 
 # Database 데이터 (가장 중요!)
 back/mysql_data/
+*.sql
+*.ps1
 
 # OS/IDE 관련
 .DS_Store
@@ -17,7 +19,7 @@ back/mysql_data/
 Thumbs.db
 
 # 환경 변수 (비밀번호 포함 가능성)
-.env
+*.env
 
 # test cache
 .pytest_cache/
