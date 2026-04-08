@@ -65,7 +65,11 @@ const RecommendPage = () => {
   const [activityWeight, setActivityWeight] = useState(50);
   const [typeWeight, setTypeWeight] = useState(50);
 
-  const keywords = ['데이터 분석', 'AI 연구', '웹 개발', '기획', '디자인', '마케팅', '문제 해결', '프로젝트 매니징'];
+  const keywords = [
+    '인공지능(AI)', '데이터 분석', '반도체', '코딩', '자율주행', 
+    '기초과학연구', '바이오/제약', '신소재/에너지', '건축', '인턴/현장실습', 
+    '공모전', '경진대회', '학술연구', '창업준비', '진로탐색'
+  ];
 
   useEffect(() => {
     const saved = localStorage.getItem('heartedActivities');
@@ -107,6 +111,9 @@ const RecommendPage = () => {
       alert('관심 있는 활동이나 목표를 최소 5자 이상 적어주세요.');
       return;
     }
+    setPrefWeight(50);
+    setActivityWeight(50);
+    setTypeWeight(50);
     setIsRecommended(true);
   };
 
@@ -128,13 +135,18 @@ const RecommendPage = () => {
           </div>
           
           <div className="sentence-input-wrapper">
-            <textarea 
-              className="sentence-input" 
-              placeholder="예: 데이터 분석 역량을 키워서 IT 서비스 기획자가 되고 싶어요."
-              value={preferredSentence}
-              onChange={(e) => setPreferredSentence(e.target.value)}
-              maxLength={200}
-            />
+            <div className="textarea-container">
+              <textarea 
+                className="sentence-input" 
+                placeholder="예: 인공지능 분야의 연구 역량을 키워서 관련 기업에 취업하고 싶어요."
+                value={preferredSentence}
+                onChange={(e) => setPreferredSentence(e.target.value)}
+                maxLength={200}
+              />
+              <div className="char-count">
+                {preferredSentence.length}/200
+              </div>
+            </div>
             <button className="get-recommend-btn" onClick={handleRecommend}>
               활동 추천 받기
             </button>
@@ -191,7 +203,6 @@ const RecommendPage = () => {
 
         <div className="test-summary">
           <p>입력하신 문장: <strong>"{preferredSentence}"</strong></p>
-          <p>분석된 키워드: 데이터 분석, 서비스 기획, 문제 해결</p>
         </div>
       </div>
 
