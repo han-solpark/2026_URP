@@ -1,5 +1,5 @@
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import JSON, Boolean, Column, Integer, String, ForeignKey,Text, Date
+from sqlalchemy import JSON, Boolean, Column, Integer, String, ForeignKey,Text, Date, Float
 
 Base = declarative_base()
 
@@ -33,3 +33,39 @@ class User(Base):
     def __repr__(self):
         # 자바의 toString 같은 역할
         return f"<User(id='{self.user_id}', name='{self.name}')>"
+    
+class PastActivity(Base):
+    __tablename__ = "past_activities"
+
+    # 복합 기본키 및 외래키 설정
+    user_id = Column(String(20), ForeignKey("users.user_id"), primary_key=True)
+    activity_id = Column(Integer, ForeignKey("activities.activity_id"), primary_key=True)
+    
+    performed_school_year = Column(Integer, comment="수행 학기")
+    activity_satisfaction = Column(Integer, comment="활동 만족도")
+    carrier_satisfation = Column(Integer, comment="경로 만족도")
+
+    # 관계 설정: 객체 관점에서 유저와 활동 정보에 바로 접근 가능
+    user = relationship("User", backref="past_activities")
+    activity = relationship("Activity", back_populates="past_users")
+
+    def __repr__(self):
+        return f"<PastActivity(user_id='{self.user_id}', activity_id={self.activity_id})>"
+    
+class Recommendation(Base):
+    __tablename__ = "recommendations"
+
+    # 복합 기본키 및 외래키 설정
+    user_id = Column(String(20), ForeignKey("users.user_id"), primary_key=True)
+    activity_id = Column(Integer, ForeignKey("activities.activity_id"), primary_key=True)
+    
+    fitness_score = Column(Float, comment="적합도 점수")
+    reason_for_recommendation = Column(Text, comment="추천 사유")
+    likes = Column(Boolean, default=False, comment="좋아요 여부")
+
+    # 관계 설정 (객체 참조용)
+    user = relationship("User", backref="recommendations")
+    activity = relationship("Activity", backref="recommendations")
+
+    def __repr__(self):
+        return f"<Recommendation(user_id='{self.user_id}', activity_id={self.activity_id}, score={self.fitness_score})>"
