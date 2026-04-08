@@ -23,7 +23,7 @@ def update_year():
         rows = session.query(Activity).all()
     
         for row in rows:
-            name = row.name
+            title = row.title
             detail = row.detail
             category = row.category
 
@@ -41,7 +41,7 @@ def update_year():
             [입력] OO 공모전 [출력] 3
             [입력] OO 직원 채용 [출력] 4
 
-            name: {name}\n
+            name: {title}\n
             detail: {detail}\n
             category: {category}\n
             """

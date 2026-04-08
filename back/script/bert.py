@@ -15,16 +15,16 @@ def embedding():
         rows = session.query(Activity).all()
     
         for row in rows:
-            name = row.name
+            title = row.title
             detail = row.detail
 
             embedded = model.encode(
-                f"title: {name} \n detail: {detail}",  # 임베딩할 대상
+                f"title: {title} \n detail: {detail}",  # 임베딩할 대상
                 convert_to_tensor=True,       # PyTorch Tensor
                 normalize_embeddings=True # 정규화
             )
             
-            row.embedded = embedded.tolist()
+            row.embedding = embedded.tolist()
             print(embedded.tolist())
             
         # 3. 변경 사항 일괄 반영

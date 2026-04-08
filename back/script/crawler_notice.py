@@ -119,8 +119,8 @@ def crawl_skku_notice():
                 break # 너무 오래된 글은 이제 그냥 멈추기
             
             results.append({
-                "name": title,
-                "url": link,
+                "title": title,
+                "source_url": link,
                 "detail": detail_text[:200] + "...", # DB 용량 고려 일부만 저장
                 "category": "notice",
                 "written_date": written_date

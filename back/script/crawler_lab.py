@@ -77,11 +77,10 @@ def crawl_skku_lab():
 
                 if prof + " 교수님 - " + lab not in seen_names:
                     results.append({
-                        "name": prof + " 교수님 - " + lab,
-                        "url": url,
+                        "title": prof + " 교수님 - " + lab,
+                        "source_url": url,
                         "detail": dep + ", " + field, # DB 용량 고려 일부만 저장
-                        "category": "lab",
-                        "persistence":"long"
+                        "category": "lab"
                     })
                     seen_names.add(prof + " 교수님 - " + lab)
   

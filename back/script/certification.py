@@ -25,7 +25,7 @@ def toSQL1():
             if len(certifications[i].split("_")) > 1:
                 certifications[i] = certifications[i].split("_")[0] + " " + certifications[i].split("_")[1]
             if certifications[i] not in seen_names:
-                source.append({"name": certifications[i], "category": "certification", "detail": details[i], "persistence":"long"})
+                source.append({"title": certifications[i], "category": "certification", "detail": details[i]})
                 seen_names.add(certifications[i])
                 print("log:", source)
         
@@ -65,14 +65,14 @@ def toSQL2():
             for j in certifications['등급'][i].split(", "):
                 if j == "등급없음" or j == "단일등급":
                     if name not in seen_names:
-                        source.append({"name": name, "category": "certification", "detail":certifications['설명'][i], "persistence":"long"})
+                        source.append({"title": name, "category": "certification", "detail":certifications['설명'][i]})
                         seen_names.add(name)
                         print("log:", source)
                         
                 else:
                     new_name = name + " " + j
                     if new_name not in seen_names:
-                        source.append({"name": new_name, "category": "certification", "detail":certifications['설명'][i], "persistence":"long"})
+                        source.append({"title": new_name, "category": "certification", "detail":certifications['설명'][i]})
                         seen_names.add(new_name)
                         print("log:", source)
 
