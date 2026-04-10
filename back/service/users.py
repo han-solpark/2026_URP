@@ -22,7 +22,7 @@ model = SentenceTransformer(
 
 class UserService:
     encoding = "UTF-8"
-    secret_key = "05383d6bcf5516e8814cd26540c777061aa4e84e70d2a4b84f99e1af17faee50"
+    secret_key = os.getenv("SECRET_KEY")
     # 이 토큰이 서버가 직접 발급했고, 중간에 위·변조되지 않았다는 것을 증명하기 위한 비밀 키
     # 스택 카나리 느낌이라고 생각하기
     # secret_key를 아는 주체만 올바른 서명 생성 가능
