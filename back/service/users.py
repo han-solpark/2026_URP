@@ -12,7 +12,6 @@ from torch import *
 import bcrypt
 from datetime import datetime, timedelta
 from jose import jwt
-import random
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 LLM_KEY = os.getenv("LLM_KEY")
@@ -31,7 +30,7 @@ class UserService:
         hashed_password: bytes = bcrypt.hashpw(plain_password.encode(self.encoding), salt=bcrypt.gensalt())
         return hashed_password.decode(self.encoding)
 
-    def verify_password(self, plain_password:str, hashed_password:str) -> bool:
+    def verify_password(self, plain_password:str, hashed_password:str):
         return bcrypt.checkpw(plain_password.encode(self.encoding), hashed_password.encode(self.encoding))
 
     def create_jwt(self, username: str) -> str:
@@ -88,7 +87,7 @@ class UserService:
                     convert_to_tensor=True,       # PyTorch Tensor
                     normalize_embeddings=True # 정규화
                    )
-        return embedded
+        return embedded.tolist()
     
     def parse_result(self, result_url:str):
         # 1. seq 추출
@@ -116,21 +115,9 @@ class UserService:
             if name and t is not None:
                 result[name] = int(t)
 
-        return result
-"""
-if __name__ == "__main__":
-    # AI 사용 랜덤 답변 샘플 생성
-    sample_data = ResultReportRequest(
-        gender="100323",
-        grade="2",
-        answers="2,4,1,5,3,2,3,1,4,2,5,3,2,1,4,5,3,2,4,1,3,5,2,4,1,2,3,5,4,2,1,3,4,5,2,3,1,4,2,5,3,1,2,4,5,3,2,1,4"
-    )
-
-    print("🚀 커리어넷 API 요청을 시작합니다...")
-    result_url = UserService.request_result_report(sample_data)
-    parse = UserService.parse_aresult(result_url)
+        exp_data = {k: math.exp(v) for k, v in result.items()}
     
-    print("\n[최종 결과]")
-    print(result_url)
-    print(parse)
-"""
+        # 2. 합계 계산
+        total = sum(exp_data.values())
+    
+        return {k: v / total for k, v in exp_data.items()}

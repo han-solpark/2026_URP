@@ -13,9 +13,23 @@ class ResultReportRequest(BaseModel): # 심리검사 결과 레포트 요청 스
     answers: str         
 
 class SignUpRequest(BaseModel):
-    username: str
+    user_id: str
     password: str
+    name: str
+    school_year: int
 
 class LogInRequest(BaseModel):
-    username: str
+    id: str
     password: str
+
+class UserModifyRequest(BaseModel):
+    name: Optional[str] = None
+    school_year: Optional[int] = None
+
+class PreferenceRequest(BaseModel):
+    preference: str
+
+class RecommendRequest(BaseModel):
+    pref_weight: int
+    activities_weight: int
+    type_weight: int

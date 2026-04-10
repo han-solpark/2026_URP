@@ -1,9 +1,13 @@
 from fastapi import FastAPI
+from api.users import router as users_router
+from api.recommendations import router as rec_router
 
 app = FastAPI()
 
-@app.get("/")
-def main():
-    return {"ping": "pong"}
+# 작성하신 users 라우터를 통합합니다.
+app.include_router(users_router)
+app.include_router(rec_router)
 
-# uvicorn main:app
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
