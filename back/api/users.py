@@ -47,7 +47,8 @@ def user_log_in_handler(request: LogInRequest, user_repo: UserRepository = Depen
 @router.get("/check-username/{id}")
 def user_check_username_handler(id: str, user_repo: UserRepository = Depends()):
     user: User | None = user_repo.get_user_by_username(id)
-    if not User:
+
+    if not user:
         return {"available": True}
     
     return {"available": False}
