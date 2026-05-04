@@ -56,7 +56,7 @@ POST /users/sign-up
 | 항목 | 내용 |
 |------|------|
 | 인증 | 불필요 |
-| Request Body | `{ "user_id": "학번", "password": "비밀번호", "name": "이름", "school_year": 3 }` |
+| Request Body | `{ "user_id": "아이디", "password": "비밀번호", "name": "이름", "school_year": 3 }` |
 | Response | `true` |
 
 #### 로그인
@@ -66,7 +66,7 @@ POST /users/log-in
 | 항목 | 내용 |
 |------|------|
 | 인증 | 불필요 |
-| Request Body | `{ "user_id": "학번", "password": "비밀번호" }` |
+| Request Body | `{ "id": "아이디", "password": "비밀번호" }` |
 | Response | `{ "access_token": "jwt토큰" }` |
 
 ---
@@ -80,7 +80,7 @@ GET /users/me
 | 항목 | 내용 |
 |------|------|
 | 인증 | 필요 |
-| Response | `{ "user_id": "학번", "name": "이름", "school_year": 3, "has_test_result": true, "ability_url": "url" }` |
+| Response | `{ "user_id": "학번", "name": "이름", "school_year": 3, "has_test_result": true, "ability_url": "url", "ability": "능력 벡터" }` |
 
 #### 내 정보 수정
 ```
@@ -102,12 +102,23 @@ POST /users/me/test-result
 | 항목 | 내용 |
 |------|------|
 | 인증 | 필요 |
-| Request Body | `{ "ability_url": "커리어넷 결과 리포트 URL" }` |
+| Request Body | `{ "gender": "성별", "grade": 2, "answers": 2,3,4,... }` |
+| Response | `{ "success": true }` |
+
+---
+### 4. 선호 문장
+```
+POST /me/preference
+```
+| 항목 | 내용 |
+|------|------|
+| 인증 | 필요 |
+| Request Body | `{ "preference": "선호활동"}` |
 | Response | `{ "success": true }` |
 
 ---
 
-### 4. 활동 추천 (RecommendPage)
+### 5. 활동 추천 (RecommendPage)
 
 ```
 POST /activities/recommend
@@ -121,7 +132,6 @@ POST /activities/recommend
 **Request Body**
 ```json
 {
-  "preference": "데이터 분석 역량을 키워서 IT 서비스 기획자가 되고 싶어요.",
   "pref_weight": 50,
   "activity_weight": 50,
   "type_weight": 50
@@ -132,12 +142,8 @@ POST /activities/recommend
 ```json
 [
   {
-    "id": 1,
-    "category": "연구활동",
-    "title": "교내 URP 프로그램",
-    "description": "교수님과 함께하는 학부생 연구 기회입니다.",
-    "recommendationReason": "관심 분야인 AI 연구에 대한 실무 경험을 쌓기에 가장 적합한 활동입니다.",
-    "url": "https://..."
+    "activity_id": 1,
+    "fitness_score": "연구활동"
   }
 ]
 ```
@@ -148,7 +154,7 @@ POST /activities/recommend
 
 > 하트 버튼 클릭 시 즉시 서버에 반영합니다.
 
-#### 하트 추가
+#### 하트
 ```
 POST /users/me/hearted-activities/{activity_id}
 ```
@@ -157,18 +163,6 @@ POST /users/me/hearted-activities/{activity_id}
 | 인증 | 필요 |
 | Path Param | `activity_id` — 하트할 활동 ID |
 | Response | `{ "success": true }` |
-
-#### 하트 삭제
-```
-DELETE /users/me/hearted-activities/{activity_id}
-```
-| 항목 | 내용 |
-|------|------|
-| 인증 | 필요 |
-| Path Param | `activity_id` — 하트 취소할 활동 ID |
-| Response | `{ "success": true }` |
-
----
 
 ### 6. 하트 활동 조회 (RoadmapPage)
 
@@ -207,17 +201,17 @@ GET /users/me/past-activities
 | 항목 | 내용 |
 |------|------|
 | 인증 | 필요 |
-| Response | `{ "grade_activities": { "1": [{id, title, category}], "2": [...], "3": [...], "4": [...] } }` |
+| Response | `{ "grade1": [1, 2, 3], "grade2": [...], "grade3": [...], "grade4": [...] }` |
 
 #### 학년별 활동 추가
 ```
-POST /users/me/past-activities/{activity_id}
+POST /users/me/past-activities
 ```
 | 항목 | 내용 |
 |------|------|
 | 인증 | 필요 |
-| Path Param | `activity_id` — 추가할 활동 ID |
-| Request Body | `{ "grade": 1 }` |
+| Path Param |  |
+| Request Body | `{ "grade1": [1, 2, 3], "grade2": [...], "grade3": [...], "grade4": [...] }` |
 | Response | `{ "success": true }` |
 
 #### 학년별 활동 삭제

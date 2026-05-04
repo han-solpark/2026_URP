@@ -9,7 +9,8 @@ from database.orm import User, Recommendation, PastActivity, Activity
 
 from torch import *
 import torch.nn.functional as F
-from schema.request import RecommendRequest
+from schema.request import RecommendRequest, LikedActivitiesRequest
+from sqlalchemy import update
 
 import os
 from pathlib import Path
@@ -23,6 +24,7 @@ LLM_KEY = os.getenv("LLM_KEY")
 
 import datetime
 from dateutil.relativedelta import relativedelta
+from schema.response import LikedActiviteisResponse
 CURRENT_DATE = datetime.date.today()
 
 class RecommendationRepository:
@@ -161,3 +163,53 @@ class RecommendationRepository:
         self.session.commit()
         
         return top_5_results
+    
+    def like_activity(self, user_id: str, request: LikedActivitiesRequest):
+        try:
+
+            stmt = (
+                update(Recommendation)
+                .where(Recommendation.user_id == user_id)
+                .where(Recommendation.activity_id == request.activity_id)
+                .values(likes=~Recommendation.likes)  # 핵심: NOT 연산
+            )
+            
+            result = self.session.execute(stmt)
+            
+            self.session.commit()
+            
+            if result.rowcount == 0:
+                return {"status": "error", "message": "해당 추천 내역을 찾을 수 없습니다."}
+                
+            return {"status": "success", "message": f"Activity {request.activity_id} liked by {user_id}"}
+
+        except Exception as e:
+            self.session.rollback() # 에러 발생 시 롤백
+            return {"status": "error", "message": str(e)}
+        
+    def get_like_activity(self, user_id: str):
+        stmt = (
+            select(
+                Activity.activity_id,
+                Activity.category,
+                Activity.title,
+                Activity.source_url,
+                Recommendation.reason_for_recommendation
+            )
+            .join(Recommendation, Activity.activity_id == Recommendation.activity_id)
+            .where(Recommendation.user_id == user_id)
+            .where(Recommendation.likes == True)
+        )
+
+        result = self.session.execute(stmt)
+        
+        return [
+            LikedActiviteisResponse(
+                activity_id=row.activity_id,
+                category=row.category,
+                title=row.title,
+                source_url=row.source_url,
+                reason_for_recommendation=row.reason_for_recommendation
+            )
+            for row in result
+        ]

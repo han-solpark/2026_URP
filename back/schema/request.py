@@ -23,7 +23,6 @@ class LogInRequest(BaseModel):
     password: str
 
 class UserModifyRequest(BaseModel):
-    name: Optional[str] = None
     school_year: Optional[int] = None
 
 class PreferenceRequest(BaseModel):
@@ -33,3 +32,12 @@ class RecommendRequest(BaseModel):
     pref_weight: int
     activities_weight: int
     type_weight: int
+
+class LikedActivitiesRequest(BaseModel):
+    activity_id: int
+
+class PastActivitiesRequest(BaseModel):
+    grade1: Optional[list[int]] = None
+    grade2: Optional[list[int]] = None
+    grade3: Optional[list[int]] = None
+    grade4: Optional[list[int]] = None

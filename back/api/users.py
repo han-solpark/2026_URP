@@ -4,7 +4,9 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from fastapi import APIRouter, Depends, HTTPException
 
 from repository.users import UserRepository
-from schema.request import SignUpRequest, LogInRequest, PreferenceRequest, UserModifyRequest, ResultReportRequest
+from repository.recommendations import RecommendationRepository
+from repository.past_activites import PastActivitiesRepository
+from schema.request import PastActivitiesRequest, SignUpRequest, LogInRequest, PreferenceRequest, UserModifyRequest, ResultReportRequest, LikedActivitiesRequest
 from schema.response import JWTResponse, UserSchema
 from service.users import UserService
 from database.orm import User
@@ -95,3 +97,50 @@ def user_preference_handler(request: PreferenceRequest,
     embedding = user_service.embedding(request.preference)
 
     return user_repo.save_preference(user_id, request.preference, embedding)
+
+@router.post("/me/liked-activities", status_code=201)
+def user_liked_activities_handler(request: LikedActivitiesRequest,
+                                  access_token: str = Depends(get_access_token),
+                                  rec_repo: RecommendationRepository = Depends(),
+                                  user_service: UserService = Depends()):
+    user_id = user_service.decode_jwt(access_token)
+
+    return rec_repo.like_activity(user_id, request)
+
+@router.get("/me/liked-activities", status_code=200)
+def user_liked_get_handler(access_token: str = Depends(get_access_token),
+                           user_service: UserService = Depends(),
+                           rec_repo: RecommendationRepository = Depends()):
+    user_id = user_service.decode_jwt(access_token)
+
+    return rec_repo.get_like_activity(user_id)
+
+@router.post("/me/past-activities", status_code=201)
+def user_past_activities_handler(request: PastActivitiesRequest,
+                                 access_token: str = Depends(get_access_token),
+                                 pa_repo: PastActivitiesRepository = Depends(),
+                                 user_service: UserService = Depends()):
+
+    user_id = user_service.decode_jwt(access_token)
+
+    return pa_repo.past_activity(user_id, request)
+
+@router.get("/me/past-activities")
+def get_past_activities_handler(access_token: str = Depends(get_access_token),
+                                 pa_repo: PastActivitiesRepository = Depends(),
+                                 user_service: UserService = Depends()):
+    user_id = user_service.decode_jwt(access_token)
+
+    return pa_repo.get_past_activity(user_id)
+
+
+@router.delete("/me/past-activities/{activity_id}")
+def delete_past_activities_handler(activity_id = int,
+                                 access_token: str = Depends(get_access_token),
+                                 pa_repo: PastActivitiesRepository = Depends(),
+                                 user_service: UserService = Depends()):
+    user_id = user_service.decode_jwt(access_token)
+
+    return pa_repo.delete_past_activity(user_id, activity_id)
+
+
