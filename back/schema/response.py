@@ -20,7 +20,7 @@ class LikedActiviteisResponse(BaseModel):
     activity_id: int
     category: str
     title: str
-    source_url: str
+    source_url: Optional[str] = None
     reason_for_recommendation: str
 
 class PastActivitiesResponse(BaseModel):
@@ -31,7 +31,7 @@ class PastActivitiesResponse(BaseModel):
 
 class RecommendActivitiesResponse(BaseModel):
     activity_id:int
-    source_url: str
+    source_url: Optional[str] = None
     category: str
     title: str
     reason_for_recommendation: str
