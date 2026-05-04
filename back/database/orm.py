@@ -24,7 +24,7 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(String(20), primary_key=True)
-    password = Column(String(20), nullable=False)
+    password = Column(String(100), nullable=False)
     name = Column(String(20), comment="이름")
     school_year = Column(Integer, comment="학기")
     ability = Column(JSON, comment="검사 결과 능력")
