@@ -61,7 +61,7 @@ class RecommendationRepository:
         return result.scalars().all()
     
     def recommend(self, user_id: str, request:RecommendRequest):
-        user_orm = self.session.query(User).filter(User.id == user_id).first()
+        user_orm = self.session.query(User).filter(User.user_id == user_id).first()
         # 가중치 가져오기
         pref_weight = request.pref_weight
         activity_weight = request.activity_weight
