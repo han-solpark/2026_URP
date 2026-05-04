@@ -19,15 +19,15 @@ def save_labs(labs):
     try:
         for item in labs: # labs는 name url detail로 구성
             # 2. 중복 체크 (URL 기준)
-            exists = session.query(Activity).filter(Activity.name == item['name']).first()
+            exists = session.query(Activity).filter(Activity.title == item['title']).first()
             
             if not exists:
                 new_row = Activity(**item) 
                 session.add(new_row)
-                print(f"신규 추가: {item['name']}")
+                print(f"신규 추가: {item['title']}")
             else:
                 # 이미 존재하면 루프를 중단하거나 건너뜀
-                print(f"중복 패스: {item['name']}")
+                print(f"중복 패스: {item['title']}")
         
         session.commit()
         

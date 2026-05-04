@@ -30,14 +30,14 @@ def toSQL1():
                 print("log:", source)
         
         for item in source:
-            exists = session.query(Activity).filter(Activity.name == item['name']).first()
+            exists = session.query(Activity).filter(Activity.title == item['title']).first()
                 
             if not exists:
                 new_row = Activity(**item) 
                 session.add(new_row)
-                print(f"신규 추가: {item['name']}")
+                print(f"신규 추가: {item['title']}")
             else:
-                print(f"중복 패스: {item['name']}")
+                print(f"중복 패스: {item['title']}")
 
         session.commit()
         
@@ -77,14 +77,14 @@ def toSQL2():
                         print("log:", source)
 
         for item in source:
-            exists = session.query(Activity).filter(Activity.name == item['name']).first()
+            exists = session.query(Activity).filter(Activity.title == item['title']).first()
                 
             if not exists:
                 new_row = Activity(**item) 
                 session.add(new_row)
-                print(f"신규 추가: {item['name']}")
+                print(f"신규 추가: {item['title']}")
             else:
-                print(f"중복 패스: {item['name']}")
+                print(f"중복 패스: {item['title']}")
 
         session.commit()
         

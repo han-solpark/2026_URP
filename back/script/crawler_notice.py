@@ -26,7 +26,7 @@ def save_notices(notices):
                 print(f"장학금 항목 제외: {item['title']}")
                 continue
             # 2. 중복 체크 (URL 기준)
-            exists = session.query(Activity).filter(Activity.name == item['name']).first()
+            exists = session.query(Activity).filter(Activity.title == item['title']).first()
             
             if not exists:
                 new_row = Activity(**item) 
@@ -39,10 +39,10 @@ def save_notices(notices):
                 ) 와 같은 형식으로 자동으로 맵핑되어 INSERT 쿼리를 생성함.
                 """
                 session.add(new_row)
-                print(f"신규 추가: {item['name']}")
+                print(f"신규 추가: {item['title']}")
             else:
                 # 이미 존재하면 루프를 중단하거나 건너뜀
-                print(f"중복 패스: {item['name']}")
+                print(f"중복 패스: {item['title']}")
         
         session.commit()
         
