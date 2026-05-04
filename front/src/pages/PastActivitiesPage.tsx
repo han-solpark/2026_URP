@@ -36,7 +36,6 @@ const PastActivitiesPage = () => {
     4: [],
   });
 
-  // 초기 로드 시 활동 리스트 랜덤 셔플
   useEffect(() => {
     const shuffled = [...MOCK_DB_ACTIVITIES].sort(() => Math.random() - 0.5);
     setRandomizedActivities(shuffled);
