@@ -37,3 +37,11 @@ class RecommendActivitiesResponse(BaseModel):
     reason_for_recommendation: str
     fitness_score: float
     liked: bool
+
+class ActivityResponse(BaseModel):
+    activity_id: int
+    title: str
+    category: str
+    source_url: Optional[str] = None
+    detail: Optional[str] = None
+    proper_school_year: Optional[str] = None

@@ -3,56 +3,49 @@ import { api } from '../api';
 import './PastActivitiesPage.css';
 
 interface Activity {
-  id: number;
+  activity_id: number;
   title: string;
   category: string;
 }
 
-const MOCK_DB_ACTIVITIES: Activity[] = [
-  { id: 1, title: '데이터 분석 기초 캠프', category: '비교과 활동' },
-  { id: 2, title: '웹 프론트엔드 해커톤', category: '비교과 활동' },
-  { id: 3, title: '정보처리기사 실기 스터디', category: '자격증' },
-  { id: 4, title: '인공지능 연구실 학부생 인턴', category: '학부 연구실' },
-  { id: 5, title: 'SQLD 자격증 취득 과정', category: '자격증' },
-  { id: 6, title: '컴퓨터 비전 연구실 프로젝트', category: '학부 연구실' },
-  { id: 7, title: '알고리즘 문제해결 동아리', category: '비교과 활동' },
-  { id: 8, title: 'TOEIC Speaking 챌린지', category: '자격증' },
-  { id: 9, title: '클라우드 컴퓨팅 연구실 세미나', category: '학부 연구실' },
-  { id: 10, title: '봉사활동 기획단 2기', category: '비교과 활동' },
-];
-
 const PastActivitiesPage = () => {
+  const [allActivities, setAllActivities] = useState<Activity[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGrade, setSelectedGrade] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState('전체');
-  const [randomizedActivities, setRandomizedActivities] = useState<Activity[]>([]);
-
-  const categories = ['전체', '비교과 활동', '자격증', '학부 연구실'];
-
   const [gradeActivities, setGradeActivities] = useState<Record<number, Activity[]>>({
     1: [], 2: [], 3: [], 4: [],
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const shuffled = [...MOCK_DB_ACTIVITIES].sort(() => Math.random() - 0.5);
-    setRandomizedActivities(shuffled);
+    Promise.all([
+      api.get('/activities'),
+      api.get('/users/me/past-activities'),
+    ]).then(([activitiesData, pastData]: [Activity[], { grade1: number[] | null, grade2: number[] | null, grade3: number[] | null, grade4: number[] | null }]) => {
+      setAllActivities(activitiesData);
 
-    api.get('/users/me/past-activities').then(data => {
-      if (!data) return;
-      const toActivities = (ids: number[] | null) =>
-        (ids ?? []).map(id => MOCK_DB_ACTIVITIES.find(a => a.id === id)).filter(Boolean) as Activity[];
+      if (pastData) {
+        const toActivities = (ids: number[] | null) =>
+          (ids ?? []).map(id => activitiesData.find(a => a.activity_id === id)).filter(Boolean) as Activity[];
 
-      setGradeActivities({
-        1: toActivities(data.grade1),
-        2: toActivities(data.grade2),
-        3: toActivities(data.grade3),
-        4: toActivities(data.grade4),
-      });
-    });
+        setGradeActivities({
+          1: toActivities(pastData.grade1),
+          2: toActivities(pastData.grade2),
+          3: toActivities(pastData.grade3),
+          4: toActivities(pastData.grade4),
+        });
+      }
+    }).finally(() => setLoading(false));
   }, []);
 
+  const categories = useMemo(() =>
+    ['전체', ...Array.from(new Set(allActivities.map(a => a.category).filter(Boolean)))],
+    [allActivities]
+  );
+
   const filteredActivities = useMemo(() => {
-    let result = randomizedActivities;
+    let result = allActivities;
     if (selectedCategory !== '전체') {
       result = result.filter(a => a.category === selectedCategory);
     }
@@ -63,12 +56,12 @@ const PastActivitiesPage = () => {
       );
     }
     return result;
-  }, [searchQuery, randomizedActivities, selectedCategory]);
+  }, [searchQuery, allActivities, selectedCategory]);
 
   const addActivityToGrade = (activity: Activity) => {
     setGradeActivities(prev => {
       const current = prev[selectedGrade] || [];
-      if (current.find(a => a.id === activity.id)) {
+      if (current.find(a => a.activity_id === activity.activity_id)) {
         alert('이미 추가된 활동입니다.');
         return prev;
       }
@@ -80,24 +73,25 @@ const PastActivitiesPage = () => {
     await api.delete(`/users/me/past-activities/${activityId}`);
     setGradeActivities(prev => ({
       ...prev,
-      [selectedGrade]: prev[selectedGrade].filter(a => a.id !== activityId),
+      [selectedGrade]: prev[selectedGrade].filter(a => a.activity_id !== activityId),
     }));
   };
 
   const handleSave = async () => {
     await api.post('/users/me/past-activities', {
-      grade1: gradeActivities[1].map(a => a.id),
-      grade2: gradeActivities[2].map(a => a.id),
-      grade3: gradeActivities[3].map(a => a.id),
-      grade4: gradeActivities[4].map(a => a.id),
+      grade1: gradeActivities[1].map(a => a.activity_id),
+      grade2: gradeActivities[2].map(a => a.activity_id),
+      grade3: gradeActivities[3].map(a => a.activity_id),
+      grade4: gradeActivities[4].map(a => a.activity_id),
     });
     alert('활동 기록이 저장되었습니다.');
   };
 
+  if (loading) return <div className="past-activities-page-v2"><p>불러오는 중...</p></div>;
+
   return (
     <div className="past-activities-page-v2">
       <div className="activities-layout">
-        {/* 왼쪽 섹션: 검색 및 활동 리스트 */}
         <div className="left-section">
           <div className="section-header">
             <div className="header-top-group">
@@ -129,7 +123,7 @@ const PastActivitiesPage = () => {
             <div className="activity-grid-v2">
               {filteredActivities.length > 0 ? (
                 filteredActivities.map(activity => (
-                  <div key={activity.id} className="activity-card-v2">
+                  <div key={activity.activity_id} className="activity-card-v2">
                     <div className="card-content">
                       <span className="category-label">{activity.category}</span>
                       <h4 className="activity-name">{activity.title}</h4>
@@ -149,7 +143,6 @@ const PastActivitiesPage = () => {
           </div>
         </div>
 
-        {/* 오른쪽 섹션: 학년별 활동 관리 */}
         <div className="right-section">
           <div className="section-header">
             <div className="grade-selector">
@@ -174,14 +167,14 @@ const PastActivitiesPage = () => {
             <div className="added-activities-list">
               {gradeActivities[selectedGrade]?.length > 0 ? (
                 gradeActivities[selectedGrade].map(activity => (
-                  <div key={activity.id} className="added-activity-item">
+                  <div key={activity.activity_id} className="added-activity-item">
                     <div className="added-item-info">
                       <span className="item-category">[{activity.category}]</span>
                       <span className="item-title">{activity.title}</span>
                     </div>
                     <button
                       className="remove-btn"
-                      onClick={() => removeActivityFromGrade(activity.id)}
+                      onClick={() => removeActivityFromGrade(activity.activity_id)}
                     >
                       ✕
                     </button>
