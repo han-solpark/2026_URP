@@ -3,8 +3,6 @@ from sqlalchemy import JSON, Boolean, Column, Integer, String, ForeignKey,Text, 
 
 Base = declarative_base()
 
-
-
 class Activity(Base):
     __tablename__ = "activities"
 
