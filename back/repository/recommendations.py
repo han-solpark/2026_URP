@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from database.connection import get_db
 from database.orm import User, Recommendation, PastActivity, Activity
 
-from torch import *
+import torch
 import torch.nn.functional as F
 from schema.request import RecommendRequest, LikedActivitiesRequest
 from sqlalchemy import update
@@ -64,11 +64,11 @@ class RecommendationRepository:
         user_orm = self.session.query(User).filter(User.user_id == user_id).first()
         # 가중치 가져오기
         pref_weight = request.pref_weight
-        activity_weight = request.activity_weight
+        activity_weight = request.activities_weight
         type_weight = request.type_weight
 
         # 선호 벡터 만들기
-        preference_vector = torch.tensor(user_orm.preferense_embedding)
+        preference_vector = torch.tensor(user_orm.preference_embedding)
 
         # 능력 벡터 만들기
         ability = user_orm.ability # dict
@@ -104,9 +104,11 @@ class RecommendationRepository:
         user_v = (pref_weight * p_vec) + (activity_weight * a_vec) + (type_weight * h_vec)
         user_v = F.normalize(user_v, p=2, dim=0)
 
+        print(user_v)
+
         results = []
         for activity in self.activities:
-            if activity.embedding and activity.proper_school_year == user_orm.school_year:
+            if activity.proper_school_year == "ALL" or activity.proper_school_year == str(user_orm.school_year):
                 if activity.written_date and activity.written_date < CURRENT_DATE-relativedelta(months=4):
                     continue
 
@@ -119,9 +121,9 @@ class RecommendationRepository:
                     "activity_id": activity.activity_id,
                     "fitness_score": score
                 })
-
+        print(f"DEBUG: 필터링 통과한 활동 수: {len(results)}")
         top_5_results = sorted(results, key=lambda x: x['fitness_score'], reverse=True)[:5]
-
+        print(f"DEBUG: Top 5 활동 IDs: {[r['activity_id'] for r in top_5_results]}")
         # likes true인 애들은 그대로 두자
         keep_query = select(Recommendation.activity_id).where(
             (Recommendation.user_id == user_id) & (Recommendation.likes == True)
@@ -150,7 +152,7 @@ class RecommendationRepository:
                 
                 # ERROR 반환 시 처리: 기본 문구로 대체
                 if "ERROR" in reason_for_recommendation:
-                    reason = f"{activity.title} 활동은 사용자님의 평소 관심사와 핵심 역량에 잘 부합하여 추천합니다."
+                    reason_for_recommendation = f"{activity.title} 활동은 사용자님의 평소 관심사와 핵심 역량에 잘 부합하여 추천합니다."
                 new_rec = Recommendation(
                     user_id=user_id,
                     activity_id=res['activity_id'],
