@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 type Question = {
@@ -38,6 +39,7 @@ type Choice = {
 };
 
 function CareerTest() {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [resultUrl, setResultUrl] = useState('');
@@ -443,10 +445,7 @@ function CareerTest() {
             <div>
               <button
                 onClick={() => {
-                  setResultUrl('');
-                  setAnswers({});
-                  setTestStarted(false);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  navigate('/my-info');
                 }}
                 style={{
                   padding: '12px 24px',
@@ -458,7 +457,7 @@ function CareerTest() {
                   fontWeight: 'bold',
                 }}
               >
-                다시 검사하기
+                마이 페이지로 이동
               </button>
             </div>
           </div>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Myinfo</title>
+    <style>
+        body{
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            /* 화면 전체 중앙 정렬 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        home{
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgb(255, 255, 255);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        home a {
+            text-decoration: none;
+            color: inherit;
+        }
+        home button{
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            /* padding: 1px 2px; */
+            width: 100px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+         home button:hover {
+            background-color: #97cfc9;
+        }
+        #info-btn {
+            background-color: #97cfc9;
+            color: rgb(0, 0, 0);
+            border-radius: 50px;
+        }
+        #info-btn:hover {
+            background-color: #97cfc9;
+        }
+        .content {
+            margin-top: 80px;
+            text-align: center;
+            padding: 20px;
+            width: 80%;
+        }
+
+    </style>
+</head>
+
+<body> 
+    <home>
+        <a href="home.htm"><button><h3>Home</h3></button></a>
+        <a href="myinfo.htm"><button id="info-btn"><h3>나의 기록</h3></button></a> 
+        <a href="recommend.htm"><button><h3>활동 추천</h3></button></a>
+        <a href="roadmap.htm"><button><h3>로드맵</h3></button></a>
+    </home>
+</body>
