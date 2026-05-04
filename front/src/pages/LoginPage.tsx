@@ -21,7 +21,7 @@ const LoginPage = () => {
 
       if (data.access_token) {
         localStorage.setItem('token', data.access_token);
-        navigate('/');
+        navigate('/activities');
       } else {
         setError('아이디 또는 비밀번호가 올바르지 않습니다.');
       }

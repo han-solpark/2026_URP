@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage'; // 로그인 페이지 추가
-import SignupPage from './pages/SignupPage'; // 회원가입 페이지 추가
+import LoginPage from './pages/LoginPage'; 
+import SignupPage from './pages/SignupPage'; 
 import CareerTest from './pages/career-test';
 import MyInfoPage from './pages/MyInfoPage';
 import RecommendPage from './pages/RecommendPage';
@@ -15,14 +15,15 @@ const AppContent = () => {
   const location = useLocation();
   const hideHeaderPaths = ['/login', '/signup'];
   const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
+  const isLoggedIn = !!localStorage.getItem('token');
 
   return (
     <>
       {!shouldHideHeader && <Header />}
       <div className={shouldHideHeader ? "" : "container"}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={isLoggedIn ? <Navigate to="/activities" /> : <LoginPage />} />
+          <Route path="/signup" element={isLoggedIn ? <Navigate to="/activities" /> : <SignupPage />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/test" element={<CareerTest />} />
           <Route path="/my-info" element={<MyInfoPage />} />
