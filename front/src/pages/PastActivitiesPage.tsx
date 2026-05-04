@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { api } from '../api';
 import './PastActivitiesPage.css';
 
 interface Activity {
@@ -25,63 +26,72 @@ const PastActivitiesPage = () => {
   const [selectedGrade, setSelectedGrade] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [randomizedActivities, setRandomizedActivities] = useState<Activity[]>([]);
-  
+
   const categories = ['전체', '비교과 활동', '자격증', '학부 연구실'];
 
-  // 학년별로 저장된 활동들 (실제로는 서버나 로컬 스토리지에 저장되겠지만 여기서는 상태로 관리)
   const [gradeActivities, setGradeActivities] = useState<Record<number, Activity[]>>({
-    1: [],
-    2: [],
-    3: [],
-    4: [],
+    1: [], 2: [], 3: [], 4: [],
   });
 
   useEffect(() => {
     const shuffled = [...MOCK_DB_ACTIVITIES].sort(() => Math.random() - 0.5);
     setRandomizedActivities(shuffled);
+
+    api.get('/users/me/past-activities').then(data => {
+      if (!data) return;
+      const toActivities = (ids: number[] | null) =>
+        (ids ?? []).map(id => MOCK_DB_ACTIVITIES.find(a => a.id === id)).filter(Boolean) as Activity[];
+
+      setGradeActivities({
+        1: toActivities(data.grade1),
+        2: toActivities(data.grade2),
+        3: toActivities(data.grade3),
+        4: toActivities(data.grade4),
+      });
+    });
   }, []);
 
   const filteredActivities = useMemo(() => {
     let result = randomizedActivities;
-    
     if (selectedCategory !== '전체') {
-      result = result.filter(activity => activity.category === selectedCategory);
+      result = result.filter(a => a.category === selectedCategory);
     }
-    
     if (searchQuery) {
-      result = result.filter(activity =>
-        activity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        activity.category.toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter(a =>
+        a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
     return result;
   }, [searchQuery, randomizedActivities, selectedCategory]);
 
   const addActivityToGrade = (activity: Activity) => {
     setGradeActivities(prev => {
-      const currentGradeList = prev[selectedGrade] || [];
-      if (currentGradeList.find(a => a.id === activity.id)) {
+      const current = prev[selectedGrade] || [];
+      if (current.find(a => a.id === activity.id)) {
         alert('이미 추가된 활동입니다.');
         return prev;
       }
-      return {
-        ...prev,
-        [selectedGrade]: [...currentGradeList, activity]
-      };
+      return { ...prev, [selectedGrade]: [...current, activity] };
     });
   };
 
-  const removeActivityFromGrade = (activityId: number) => {
+  const removeActivityFromGrade = async (activityId: number) => {
+    await api.delete(`/users/me/past-activities/${activityId}`);
     setGradeActivities(prev => ({
       ...prev,
-      [selectedGrade]: prev[selectedGrade].filter(a => a.id !== activityId)
+      [selectedGrade]: prev[selectedGrade].filter(a => a.id !== activityId),
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    await api.post('/users/me/past-activities', {
+      grade1: gradeActivities[1].map(a => a.id),
+      grade2: gradeActivities[2].map(a => a.id),
+      grade3: gradeActivities[3].map(a => a.id),
+      grade4: gradeActivities[4].map(a => a.id),
+    });
     alert('활동 기록이 저장되었습니다.');
-    console.log('Final Grade Activities:', gradeActivities);
   };
 
   return (
@@ -104,9 +114,9 @@ const PastActivitiesPage = () => {
               </div>
               <div className="search-bar-container">
                 <span className="search-icon">🔍</span>
-                <input 
-                  type="text" 
-                  placeholder="활동을 검색해보세요" 
+                <input
+                  type="text"
+                  placeholder="활동을 검색해보세요"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="search-input"
@@ -114,7 +124,7 @@ const PastActivitiesPage = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="activity-scroll-area">
             <div className="activity-grid-v2">
               {filteredActivities.length > 0 ? (
@@ -124,10 +134,9 @@ const PastActivitiesPage = () => {
                       <span className="category-label">{activity.category}</span>
                       <h4 className="activity-name">{activity.title}</h4>
                     </div>
-                    <button 
+                    <button
                       className="add-to-grade-btn"
                       onClick={() => addActivityToGrade(activity)}
-                      title="현재 학년에 추가"
                     >
                       추가
                     </button>
@@ -145,7 +154,7 @@ const PastActivitiesPage = () => {
           <div className="section-header">
             <div className="grade-selector">
               {[1, 2, 3, 4].map(grade => (
-                <button 
+                <button
                   key={grade}
                   className={`grade-btn ${selectedGrade === grade ? 'active' : ''}`}
                   onClick={() => setSelectedGrade(grade)}
@@ -170,7 +179,7 @@ const PastActivitiesPage = () => {
                       <span className="item-category">[{activity.category}]</span>
                       <span className="item-title">{activity.title}</span>
                     </div>
-                    <button 
+                    <button
                       className="remove-btn"
                       onClick={() => removeActivityFromGrade(activity.id)}
                     >
@@ -185,7 +194,7 @@ const PastActivitiesPage = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="save-action-area">
               <button className="final-save-btn" onClick={handleSave}>
                 전체 활동 저장하기

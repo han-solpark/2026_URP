@@ -1,84 +1,36 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { api } from '../api';
 import './RecommendPage.css';
 
 interface Recommendation {
-  id: number;
+  activity_id: number;
   category: string;
   title: string;
-  description: string;
-  recommendationReason: string;
-  url: string;
+  source_url: string;
+  reason_for_recommendation: string;
+  fitness_score: number;
+  liked: boolean;
 }
-
-const MOCK_RECOMMENDATIONS: Recommendation[] = [
-  { 
-    id: 1, 
-    category: '연구활동', 
-    title: '교내 URP 프로그램', 
-    description: '교수님과 함께하는 학부생 연구 기회입니다. 실무 연구 역량을 쌓을 수 있습니다.',
-    recommendationReason: '관심 분야인 AI 연구에 대한 실무 경험을 쌓기에 가장 적합한 활동입니다.',
-    url: 'https://www.example.com/urp'
-  },
-  { 
-    id: 2, 
-    category: '자기계발', 
-    title: '데이터 분석 캠프', 
-    description: 'Python과 SQL을 활용한 실무 데이터 분석 역량을 강화하는 집중 교육 과정입니다.',
-    recommendationReason: '데이터 분석가로의 커리어 전환을 위한 필수 역량을 단기간에 집중적으로 습득할 수 있습니다.',
-    url: 'https://www.example.com/data-camp'
-  },
-  { 
-    id: 3, 
-    category: '공모전', 
-    title: 'IT 서비스 아이디어 공모전', 
-    description: '사회 문제를 해결하는 혁신적인 IT 서비스 모델을 제안하고 시상받을 수 있는 기회입니다.',
-    recommendationReason: '기획력을 입증할 수 있는 결과물을 만들 수 있으며, 수상 시 강력한 포트폴리오가 됩니다.',
-    url: 'https://www.example.com/it-contest'
-  },
-  { 
-    id: 4, 
-    category: '인턴십', 
-    title: '동계 스타트업 인턴십', 
-    description: '유망 스타트업에서 실제 프로젝트를 수행하며 실무 감각을 익힐 수 있는 프로그램입니다.',
-    recommendationReason: '실제 서비스 개발 환경을 경험함으로써 협업 능력과 문제 해결 능력을 동시에 키울 수 있습니다.',
-    url: 'https://www.example.com/internship'
-  },
-  { 
-    id: 5, 
-    category: '스터디', 
-    title: '알고리즘 코테 준비반', 
-    description: '주요 IT 기업의 코딩 테스트 대비를 위한 체계적인 문제 풀이 및 코드 리뷰 스터디입니다.',
-    recommendationReason: '원하시는 대기업 취업을 위해 가장 먼저 넘어야 할 코딩 테스트 관문을 체계적으로 준비할 수 있습니다.',
-    url: 'https://www.example.com/algo-study'
-  }
-];
 
 const RecommendPage = () => {
   const navigate = useNavigate();
   const [isRecommended, setIsRecommended] = useState(false);
   const [preferredSentence, setPreferredSentence] = useState('');
-  const [heartedIds, setHeartedIds] = useState<number[]>([]);
-  
-  // Weights for recommendations
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [likedIds, setLikedIds] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [prefWeight, setPrefWeight] = useState(50);
   const [activityWeight, setActivityWeight] = useState(50);
   const [typeWeight, setTypeWeight] = useState(50);
 
   const keywords = [
-    '인공지능(AI)', '데이터 분석', '반도체', '코딩', '자율주행', 
-    '기초과학연구', '바이오/제약', '신소재/에너지', '건축', '인턴/현장실습', 
+    '인공지능(AI)', '데이터 분석', '반도체', '코딩', '자율주행',
+    '기초과학연구', '바이오/제약', '신소재/에너지', '건축', '인턴/현장실습',
     '공모전', '경진대회', '학술연구', '창업준비', '진로탐색'
   ];
 
-  useEffect(() => {
-    const saved = localStorage.getItem('heartedActivities');
-    if (saved) {
-      setHeartedIds(JSON.parse(saved));
-    }
-  }, []);
-
-  // Handle browser-level page leave confirmation (refresh, close tab)
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isRecommended) {
@@ -86,40 +38,41 @@ const RecommendPage = () => {
         e.returnValue = '';
       }
     };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isRecommended]);
 
-  const toggleHeart = (id: number) => {
-    const newHearted = heartedIds.includes(id)
-      ? heartedIds.filter(hId => hId !== id)
-      : [...heartedIds, id];
-    
-    setHeartedIds(newHearted);
-    localStorage.setItem('heartedActivities', JSON.stringify(newHearted));
+  const toggleHeart = async (activityId: number) => {
+    await api.post('/users/me/liked-activities', { activity_id: activityId });
+    setLikedIds(prev =>
+      prev.includes(activityId)
+        ? prev.filter(id => id !== activityId)
+        : [...prev, activityId]
+    );
   };
 
   const handleBack = () => {
     if (window.confirm('이전 화면으로 돌아가시겠습니까? 추천된 활동 정보는 사라지며 다시 입력해야 합니다.')) {
       setIsRecommended(false);
+      setRecommendations([]);
     }
   };
 
-  const handleRecommend = () => {
+  const handleRecommend = async () => {
     if (preferredSentence.trim().length < 5) {
       alert('관심 있는 활동이나 목표를 최소 5자 이상 적어주세요.');
       return;
     }
-    setPrefWeight(50);
-    setActivityWeight(50);
-    setTypeWeight(50);
+    setIsLoading(true);
+    const data = await api.post('/recommendations/recommend', {
+      pref_weight: prefWeight,
+      activities_weight: activityWeight,
+      type_weight: typeWeight,
+    });
+    setRecommendations(data);
+    setLikedIds(data.filter((r: Recommendation) => r.liked).map((r: Recommendation) => r.activity_id));
+    setIsLoading(false);
     setIsRecommended(true);
-  };
-
-  const handleRefreshRecommend = () => {
-    // 실제 서비스에서는 변경된 가중치를 바탕으로 API를 다시 호출합니다.
-    alert('반영 비율을 토대로 추천 결과가 업데이트되었습니다.');
   };
 
   if (!isRecommended) {
@@ -133,27 +86,23 @@ const RecommendPage = () => {
         <div className="input-section">
           <div className="keyword-container">
             {keywords.map((keyword, index) => (
-              <div key={index} className="keyword-bubble">
-                {keyword}
-              </div>
+              <div key={index} className="keyword-bubble">{keyword}</div>
             ))}
           </div>
-          
+
           <div className="sentence-input-wrapper">
             <div className="textarea-container">
-              <textarea 
-                className="sentence-input" 
+              <textarea
+                className="sentence-input"
                 placeholder="예: 인공지능 분야의 연구 역량을 키워서 관련 기업에 취업하고 싶어요."
                 value={preferredSentence}
                 onChange={(e) => setPreferredSentence(e.target.value)}
                 maxLength={200}
               />
-              <div className="char-count">
-                {preferredSentence.length}/200
-              </div>
+              <div className="char-count">{preferredSentence.length}/200</div>
             </div>
-            <button className="get-recommend-btn" onClick={handleRecommend}>
-              활동 추천 받기
+            <button className="get-recommend-btn" onClick={handleRecommend} disabled={isLoading}>
+              {isLoading ? '추천 중...' : '활동 추천 받기'}
             </button>
           </div>
         </div>
@@ -166,47 +115,29 @@ const RecommendPage = () => {
       <div className="recommend-header">
         <button className="back-btn" onClick={handleBack}>← 다시 입력하기</button>
         <h2>맞춤 활동 추천 결과</h2>
-        
+
         <div className="weight-control-container">
           <h3 className="weight-control-title">반영 비율 조정</h3>
           <div className="weight-sliders">
             <div className="weight-slider-item">
               <label>선호 문장</label>
-              <input 
-                type="range" 
-                min="1" 
-                max="100" 
-                value={prefWeight} 
-                onChange={(e) => setPrefWeight(Number(e.target.value))} 
-              />
+              <input type="range" min="1" max="100" value={prefWeight}
+                onChange={(e) => setPrefWeight(Number(e.target.value))} />
               <span className="weight-value">{prefWeight}</span>
             </div>
             <div className="weight-slider-item">
               <label>과거 활동</label>
-              <input 
-                type="range" 
-                min="1" 
-                max="100" 
-                value={activityWeight} 
-                onChange={(e) => setActivityWeight(Number(e.target.value))} 
-              />
+              <input type="range" min="1" max="100" value={activityWeight}
+                onChange={(e) => setActivityWeight(Number(e.target.value))} />
               <span className="weight-value">{activityWeight}</span>
             </div>
             <div className="weight-slider-item">
               <label>유형 결과</label>
-              <input 
-                type="range" 
-                min="1" 
-                max="100" 
-                value={typeWeight} 
-                onChange={(e) => setTypeWeight(Number(e.target.value))} 
-              />
+              <input type="range" min="1" max="100" value={typeWeight}
+                onChange={(e) => setTypeWeight(Number(e.target.value))} />
               <span className="weight-value">{typeWeight}</span>
             </div>
           </div>
-          <button className="re-recommend-btn" onClick={handleRefreshRecommend}>
-            다시 추천 받기
-          </button>
         </div>
 
         <div className="test-summary">
@@ -215,24 +146,25 @@ const RecommendPage = () => {
       </div>
 
       <div className="recommend-grid">
-        {MOCK_RECOMMENDATIONS.map(item => (
-          <div key={item.id} className="recommend-card">
+        {recommendations.map(item => (
+          <div key={item.activity_id} className="recommend-card">
             <span className="recommend-category">{item.category}</span>
             <h3 className="recommend-title">{item.title}</h3>
-            <p className="recommend-desc">{item.description}</p>
-            
+
             <div className="recommend-reason-box">
               <span className="reason-label">✨ 추천 이유</span>
-              <p className="reason-text">{item.recommendationReason}</p>
+              <p className="reason-text">{item.reason_for_recommendation}</p>
             </div>
 
             <div className="card-actions">
-              <a href={item.url} target="_blank" rel="noopener noreferrer" className="link-btn">상세보기</a>
-              <button 
-                className={`heart-btn ${heartedIds.includes(item.id) ? 'active' : ''}`}
-                onClick={() => toggleHeart(item.id)}
+              <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="link-btn">
+                상세보기
+              </a>
+              <button
+                className={`heart-btn ${likedIds.includes(item.activity_id) ? 'active' : ''}`}
+                onClick={() => toggleHeart(item.activity_id)}
               >
-                {heartedIds.includes(item.id) ? '❤️' : '🤍'}
+                {likedIds.includes(item.activity_id) ? '❤️' : '🤍'}
               </button>
             </div>
           </div>
