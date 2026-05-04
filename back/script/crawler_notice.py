@@ -22,6 +22,9 @@ def save_notices(notices):
     
     try:
         for item in notices: # notices는 name url detail로 구성
+            if '장학' in item['title']:
+                print(f"장학금 항목 제외: {item['title']}")
+                continue
             # 2. 중복 체크 (URL 기준)
             exists = session.query(Activity).filter(Activity.name == item['name']).first()
             
