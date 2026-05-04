@@ -73,3 +73,32 @@
 .profile-icon-btn:hover {
   background: #e1e4e8;
 }
+
+.login-btn-header, .signup-btn-header {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.login-btn-header {
+  background-color: transparent;
+  color: #1a73e8;
+  border: 1px solid #1a73e8;
+}
+
+.login-btn-header:hover {
+  background-color: #f1f7ff;
+}
+
+.signup-btn-header {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.signup-btn-header:hover {
+  background-color: #1557b0;
+}
