@@ -18,5 +18,14 @@ def recommend_handler(request: RecommendRequest,
                     recommendation_repo: RecommendationRepository = Depends()):
     user_id = user_service.decode_jwt(access_token)
 
-    return recommendation_repo.recommend(user_id, request)
+    recommendation_repo.recommend(user_id, request)
 
+    return recommendation_repo.get_recommend_activity(user_id)
+
+@router.get("/get")
+def get_recommend_handler(access_token: str = Depends(get_access_token),
+                          user_service: UserService = Depends(),
+                          recommendation_repo: RecommendationRepository = Depends()):
+    user_id = user_service.decode_jwt(access_token)
+    
+    return recommendation_repo.get_recommend_activity(user_id)

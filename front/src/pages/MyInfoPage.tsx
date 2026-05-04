@@ -1,30 +1,37 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api } from '../api';
 import './MyInfoPage.css';
 
 const MyInfoPage = () => {
   const navigate = useNavigate();
-  // 사용자가 이미 검사를 했다고 가정 (프리뷰를 위해 true로 설정)
-  const hasTestResult = true; 
-  // 실제 DB 연동 시 fetch해올 결과 URL (예시 데이터)
-  const [testResultUrl] = useState('https://www.career.go.kr/cnet/front/main/main.do'); 
-
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    id: 'user123',
-    name: '김민채',
-    grade: '3학년'
+    id: '',
+    name: '',
+    school_year: 0,
+    has_test_result: false,
+    ability_url: '',
   });
+  const [editGrade, setEditGrade] = useState('');
 
-  const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setUserInfo(prev => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    api.get('/users/me').then(data => {
+      setUserInfo({
+        id: String(data.user_id),
+        name: data.name,
+        school_year: data.school_year,
+        has_test_result: data.has_test_result,
+        ability_url: data.ability_url || '',
+      });
+      setEditGrade(String(data.school_year));
+    });
+  }, []);
 
-  const toggleEdit = () => {
+  const toggleEdit = async () => {
     if (isEditing) {
-      // 저장 로직 (API 호출 등)
-      console.log('Saved:', userInfo);
+      await api.put('/users/me', { school_year: Number(editGrade) });
+      setUserInfo(prev => ({ ...prev, school_year: Number(editGrade) }));
     }
     setIsEditing(!isEditing);
   };
@@ -40,67 +47,39 @@ const MyInfoPage = () => {
               {isEditing ? '저장' : '수정'}
             </button>
           </div>
-          
+
           <div className="info-card">
             <div className="info-item">
-              {isEditing ? (
-                <>
-                  <label>아이디</label>
-                  <input 
-                    type="text" 
-                    name="id" 
-                    value={userInfo.id} 
-                    onChange={handleInfoChange} 
-                    placeholder="아이디를 입력하세요"
-                  />
-                </>
-              ) : (
-                <div className="info-row">
-                  <span className="info-tag">아이디:</span>
-                  <span className="info-text">{userInfo.id}</span>
-                </div>
-              )}
+              <div className="info-row">
+                <span className="info-tag">아이디:</span>
+                <span className="info-text">{userInfo.id}</span>
+              </div>
             </div>
             <div className="info-item">
-              {isEditing ? (
-                <>
-                  <label>이름</label>
-                  <input 
-                    type="text" 
-                    name="name" 
-                    value={userInfo.name} 
-                    onChange={handleInfoChange} 
-                    placeholder="이름을 입력하세요"
-                  />
-                </>
-              ) : (
-                <div className="info-row">
-                  <span className="info-tag">이름:</span>
-                  <span className="info-text">{userInfo.name}</span>
-                </div>
-              )}
+              <div className="info-row">
+                <span className="info-tag">이름:</span>
+                <span className="info-text">{userInfo.name}</span>
+              </div>
             </div>
             <div className="info-item">
               {isEditing ? (
                 <>
                   <label>학년</label>
-                  <select 
-                    name="grade" 
-                    value={userInfo.grade} 
-                    onChange={handleInfoChange}
+                  <select
+                    value={editGrade}
+                    onChange={(e) => setEditGrade(e.target.value)}
                     className="grade-select"
                   >
-                    <option value="1학년">1학년</option>
-                    <option value="2학년">2학년</option>
-                    <option value="3학년">3학년</option>
-                    <option value="4학년">4학년</option>
-                    <option value="기타">기타</option>
+                    <option value="1">1학년</option>
+                    <option value="2">2학년</option>
+                    <option value="3">3학년</option>
+                    <option value="4">4학년</option>
                   </select>
                 </>
               ) : (
                 <div className="info-row">
                   <span className="info-tag">학년:</span>
-                  <span className="info-text">{userInfo.grade}</span>
+                  <span className="info-text">{userInfo.school_year}학년</span>
                 </div>
               )}
             </div>
@@ -111,20 +90,17 @@ const MyInfoPage = () => {
         <div className="right-panel">
           <div className="section-group">
             <h2>내 유형</h2>
-            {hasTestResult ? (
+            {userInfo.has_test_result ? (
               <div className="result-card">
                 <div className="chart-placeholder">[유형 분석 차트]</div>
                 <div className="button-group">
-                  <button 
-                    className="report-btn" 
-                    onClick={() => window.open(testResultUrl, '_blank')}
+                  <button
+                    className="report-btn"
+                    onClick={() => window.open(userInfo.ability_url, '_blank')}
                   >
                     결과 리포트 보기
                   </button>
-                  <button 
-                    className="retest-btn" 
-                    onClick={() => navigate('/test')}
-                  >
+                  <button className="retest-btn" onClick={() => navigate('/test')}>
                     다시 검사하기
                   </button>
                 </div>

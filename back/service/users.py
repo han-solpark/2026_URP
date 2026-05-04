@@ -7,11 +7,12 @@ from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 import time
 from urllib.parse import urlparse, parse_qs
-from torch import *
 
 import bcrypt
 from datetime import datetime, timedelta
 from jose import jwt
+
+import math
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 LLM_KEY = os.getenv("LLM_KEY")

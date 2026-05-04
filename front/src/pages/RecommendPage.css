@@ -203,6 +203,24 @@
   text-align: right;
 }
 
+.re-recommend-btn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.re-recommend-btn:hover {
+  background: #2563eb;
+}
+
 .test-summary {
   margin-top: 20px;
   padding: 15px;

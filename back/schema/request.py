@@ -9,8 +9,8 @@ class ResultReportRequest(BaseModel): # 심리검사 결과 레포트 요청 스
     gender: str          
     school: Optional[str] = ""
     grade: str           
-    startDtm: int = "" 
-    answers: str         
+    startDtm: Optional[int] = 0
+    answers: str        
 
 class SignUpRequest(BaseModel):
     user_id: str
@@ -19,11 +19,10 @@ class SignUpRequest(BaseModel):
     school_year: int
 
 class LogInRequest(BaseModel):
-    id: str
+    user_id: str
     password: str
 
 class UserModifyRequest(BaseModel):
-    name: Optional[str] = None
     school_year: Optional[int] = None
 
 class PreferenceRequest(BaseModel):
@@ -33,3 +32,12 @@ class RecommendRequest(BaseModel):
     pref_weight: int
     activities_weight: int
     type_weight: int
+
+class LikedActivitiesRequest(BaseModel):
+    activity_id: int
+
+class PastActivitiesRequest(BaseModel):
+    grade1: Optional[list[int]] = None
+    grade2: Optional[list[int]] = None
+    grade3: Optional[list[int]] = None
+    grade4: Optional[list[int]] = None

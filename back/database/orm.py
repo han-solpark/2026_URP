@@ -22,7 +22,7 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(String(20), primary_key=True)
-    password = Column(String(20), nullable=False)
+    password = Column(String(100), nullable=False)
     name = Column(String(20), comment="이름")
     school_year = Column(Integer, comment="학기")
     ability = Column(JSON, comment="검사 결과 능력")
@@ -30,6 +30,15 @@ class User(Base):
     preference = Column(Text, comment="선호 문장을 벡터로 치환한 데이터")
     preference_embedding = Column(JSON, comment="선호 문장 키워드 문자")
 
+    @classmethod
+    def create(cls, user_id:str, password: str, name: str, school_year:int):
+        return cls(
+            user_id = user_id,
+            password=password,
+            name = name,
+            school_year = school_year
+        )
+        
     def __repr__(self):
         # 자바의 toString 같은 역할
         return f"<User(id='{self.user_id}', name='{self.name}')>"
@@ -42,12 +51,10 @@ class PastActivity(Base):
     activity_id = Column(Integer, ForeignKey("activities.activity_id"), primary_key=True)
     
     performed_school_year = Column(Integer, comment="수행 학기")
-    activity_satisfaction = Column(Integer, comment="활동 만족도")
-    carrier_satisfation = Column(Integer, comment="경로 만족도")
 
     # 관계 설정: 객체 관점에서 유저와 활동 정보에 바로 접근 가능
     user = relationship("User", backref="past_activities")
-    activity = relationship("Activity", back_populates="past_users")
+    activity = relationship("Activity", backref="past_activities")
 
     def __repr__(self):
         return f"<PastActivity(user_id='{self.user_id}', activity_id={self.activity_id})>"

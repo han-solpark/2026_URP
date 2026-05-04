@@ -1,31 +1,19 @@
-
-# Python 관련
+# Python cache
 __pycache__/
+mysql_data/
 *.py[cod]
+*.pyo
+
+# Virtual environments
 .venv/
 venv/
-*.pyc
-*.pyo
-*.pyd
 
-# Database 데이터 (가장 중요!)
-back/mysql_data/
-*.sql
-*.ps1
+# Environment variables
+.env
 
-# OS/IDE 관련
-.DS_Store
-.vscode/
-Thumbs.db
+# Node modules
+node_modules/
 
-# 환경 변수 (비밀번호 포함 가능성)
-*.env
-
-# test cache
-.pytest_cache/
-
-# mypy cache
-.mypy_cache/
-
-# logs
-*.log
+# Build output
+dist/
+build/
