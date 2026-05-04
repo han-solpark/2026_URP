@@ -187,7 +187,7 @@ GET /users/me/hearted-activities
 ```
 GET /activities
 ```
-| 항목 | 내용 |
+| 항목 | 내용 |  
 |------|------|
 | 인증 | 필요 |
 | Query Param | `category` (선택) — `비교과 활동` / `자격증` / `학부 연구실` |
