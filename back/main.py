@@ -10,6 +10,19 @@ app.include_router(users_router)
 app.include_router(rec_router)
 app.include_router(act_router)
 
+origins = [
+    "http://localhost:3000",  # 예: React, Next.js 등 로컬 개발 서버 기본 주소
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # OPTIONS를 포함한 모든 메서드 허용
+    allow_headers=["*"],
+)
+
 @app.get("/")
 def health_check():
     return {"status": "ok"}
