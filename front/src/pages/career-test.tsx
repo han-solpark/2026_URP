@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 
 type Question = {
   question: string;
@@ -178,6 +179,7 @@ function CareerTest() {
       if (res.data?.SUCC_YN === 'Y' && res.data?.RESULT?.url) {
         setResultUrl(res.data.RESULT.url);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        await api.post('/users/me/test-result', payload);
       } else {
         alert(`실패 이유: ${res.data?.ERROR_REASON || JSON.stringify(res.data)}`);
       }
