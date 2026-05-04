@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { api } from '../api';
+import Loading from '../components/Loading';
 import './PastActivitiesPage.css';
 
 interface Activity {
@@ -87,7 +88,7 @@ const PastActivitiesPage = () => {
     alert('활동 기록이 저장되었습니다.');
   };
 
-  if (loading) return <div className="past-activities-page-v2"><p>불러오는 중...</p></div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="past-activities-page-v2">

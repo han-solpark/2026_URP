@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
+import Loading from '../components/Loading';
 
 interface Activity {
   activity_id: number;
@@ -26,7 +27,7 @@ const ActivitiesPage = () => {
     ? activities
     : activities.filter(a => a.category === selectedCategory);
 
-  if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>불러오는 중...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '30px 20px' }}>

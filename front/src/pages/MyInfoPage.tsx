@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { api } from '../api';
+import Loading from '../components/Loading';
 import './MyInfoPage.css';
 
 const MyInfoPage = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({
     id: '',
     name: '',
@@ -25,16 +27,20 @@ const MyInfoPage = () => {
         ability_url: data.ability_url || '',
       });
       setEditGrade(String(data.school_year));
-    });
+    }).finally(() => setLoading(false));
   }, []);
 
   const toggleEdit = async () => {
     if (isEditing) {
+      setLoading(true);
       await api.put('/users/me', { school_year: Number(editGrade) });
       setUserInfo(prev => ({ ...prev, school_year: Number(editGrade) }));
+      setLoading(false);
     }
     setIsEditing(!isEditing);
   };
+
+  if (loading) return <Loading />;
 
   return (
     <div className="my-info-page">

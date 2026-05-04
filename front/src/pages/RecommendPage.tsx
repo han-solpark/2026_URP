@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { api } from '../api';
+import Loading from '../components/Loading';
 import './RecommendPage.css';
 
 interface Recommendation {
@@ -87,11 +88,12 @@ const RecommendPage = () => {
     setIsRecommended(true);
   };
 
-  if (initialLoading) return <div className="recommend-page"><p>불러오는 중...</p></div>;
+  if (initialLoading) return <Loading />;
 
   if (!isRecommended) {
     return (
       <div className="recommend-page">
+        {isLoading && <Loading />}
         <div className="recommend-header">
           <h2>맞춤 활동 추천</h2>
           <p className="recommend-subtitle">당신이 관심 있는 활동이나 목표를 한 문장으로 적어주세요.</p>
@@ -126,6 +128,7 @@ const RecommendPage = () => {
 
   return (
     <div className="recommend-page">
+      {isLoading && <Loading />}
       <div className="recommend-header">
         <button className="back-btn" onClick={handleBack}>← 다시 입력하기</button>
         <h2>맞춤 활동 추천 결과</h2>

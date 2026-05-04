@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
+import Loading from '../components/Loading';
 import './SignupPage.css';
 
 const SignupPage = () => {
@@ -10,17 +11,25 @@ const SignupPage = () => {
   const [name, setName] = useState('');
   const [schoolYear, setSchoolYear] = useState('');
   const [idMessage, setIdMessage] = useState<{ text: string; isError: boolean } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckDuplicate = async () => {
     if (!userId) {
       setIdMessage({ text: '아이디를 입력해주세요.', isError: true });
       return;
     }
-    const data = await api.get(`/users/check-username/${userId}`);
-    setIdMessage({
-      text: data.available ? '사용 가능한 아이디입니다' : '이미 사용 중인 아이디입니다',
-      isError: !data.available,
-    });
+    setIsLoading(true);
+    try {
+      const data = await api.get(`/users/check-username/${userId}`);
+      setIdMessage({
+        text: data.available ? '사용 가능한 아이디입니다' : '이미 사용 중인 아이디입니다',
+        isError: !data.available,
+      });
+    } catch (err) {
+      setIdMessage({ text: '확인 중 오류가 발생했습니다.', isError: true });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -30,19 +39,27 @@ const SignupPage = () => {
       return;
     }
 
-    await api.postNoAuth('/users/sign-up', {
-      user_id: userId,
-      password,
-      name,
-      school_year: Number(schoolYear),
-    });
+    setIsLoading(true);
+    try {
+      await api.postNoAuth('/users/sign-up', {
+        user_id: userId,
+        password,
+        name,
+        school_year: Number(schoolYear),
+      });
 
-    alert('회원가입이 완료되었습니다! 로그인해 주세요.');
-    navigate('/login');
+      alert('회원가입이 완료되었습니다! 로그인해 주세요.');
+      navigate('/login');
+    } catch (err) {
+      alert('회원가입 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="auth-container centered-page">
+      {isLoading && <Loading />}
       <div className="auth-box large-auth-box">
         <h1 className="auth-title">QUANTUM</h1>
         <h2 className="auth-subtitle">회원가입</h2>
