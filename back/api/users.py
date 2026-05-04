@@ -123,7 +123,7 @@ def user_past_activities_handler(request: PastActivitiesRequest,
 
     user_id = user_service.decode_jwt(access_token)
 
-    return pa_repo.past_activity(user_id, request)
+    return pa_repo.past_activities(user_id, request)
 
 @router.get("/me/past-activities")
 def get_past_activities_handler(access_token: str = Depends(get_access_token),
@@ -131,7 +131,7 @@ def get_past_activities_handler(access_token: str = Depends(get_access_token),
                                  user_service: UserService = Depends()):
     user_id = user_service.decode_jwt(access_token)
 
-    return pa_repo.get_past_activity(user_id)
+    return pa_repo.get_past_activities(user_id)
 
 
 @router.delete("/me/past-activities/{activity_id}")
@@ -141,6 +141,6 @@ def delete_past_activities_handler(activity_id = int,
                                  user_service: UserService = Depends()):
     user_id = user_service.decode_jwt(access_token)
 
-    return pa_repo.delete_past_activity(user_id, activity_id)
+    return pa_repo.delete_past_activities(user_id, activity_id)
 
 
