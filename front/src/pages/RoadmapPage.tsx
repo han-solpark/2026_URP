@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { api } from '../api';
+import Loading from '../components/Loading';
 import './RoadmapPage.css';
 
 interface LikedActivity {
@@ -36,7 +37,7 @@ const RoadmapPage = () => {
     setActivities(prev => prev.filter((a: LikedActivity) => a.activity_id !== activityId));
   };
 
-  if (loading) return <div className="roadmap-page"><p>불러오는 중...</p></div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="roadmap-page">

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../api';
+import Loading from '../components/Loading';
 
 type Question = {
   question: string;
@@ -196,11 +197,7 @@ function CareerTest() {
     : 0;
 
   if (loading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '100px' }}>
-        검사지 준비 중...
-      </div>
-    );
+    return <Loading />;
   }
 
   // 검사 시작 전 성별/학년 선택 화면
@@ -343,6 +340,7 @@ function CareerTest() {
         paddingBottom: '60px',
       }}
     >
+      {isSubmitting && <Loading />}
       <div
         style={{
           position: 'sticky',
