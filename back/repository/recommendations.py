@@ -123,9 +123,12 @@ class RecommendationRepository:
         print(user_v)
 
         results = []
+        past_activity_ids = {pa.activity_id for pa in past_activities} if past_activities else set()
         for activity in self.activities:
             if activity.proper_school_year == "ALL" or activity.proper_school_year == str(user_orm.school_year):
                 if activity.written_date and activity.written_date < CURRENT_DATE-relativedelta(months=4):
+                    continue
+                if activity.activity_id in past_activity_ids:
                     continue
 
                 activity_emb = torch.tensor(activity.embedding)
