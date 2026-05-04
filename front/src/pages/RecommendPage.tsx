@@ -117,6 +117,11 @@ const RecommendPage = () => {
     setIsRecommended(true);
   };
 
+  const handleRefreshRecommend = () => {
+    // 실제 서비스에서는 변경된 가중치를 바탕으로 API를 다시 호출합니다.
+    alert('반영 비율을 토대로 추천 결과가 업데이트되었습니다.');
+  };
+
   if (!isRecommended) {
     return (
       <div className="recommend-page">
@@ -199,6 +204,9 @@ const RecommendPage = () => {
               <span className="weight-value">{typeWeight}</span>
             </div>
           </div>
+          <button className="re-recommend-btn" onClick={handleRefreshRecommend}>
+            다시 추천 받기
+          </button>
         </div>
 
         <div className="test-summary">
