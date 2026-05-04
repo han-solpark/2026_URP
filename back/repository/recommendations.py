@@ -27,6 +27,8 @@ from dateutil.relativedelta import relativedelta
 from schema.response import LikedActiviteisResponse, RecommendActivitiesResponse
 CURRENT_DATE = datetime.date.today()
 
+from concurrent.futures import ThreadPoolExecutor
+
 class RecommendationRepository:
     def __init__(self, session: Session = Depends(get_db)):
         self.session = session
@@ -61,6 +63,19 @@ class RecommendationRepository:
         return result.scalars().all()
     
     def recommend(self, user_id: str, request:RecommendRequest):
+        tasks = []
+        def fetch_reason(task):
+            reason_for_recommendation = self.call_llm(f"""
+                            이 활동이 다음 활동을 선호하는 학생에게 추천되었어. 
+                            너는 이제 왜 이 활동이 학생에게 잘 맞을 지 추천 이유를  100자 이내로 설명해 줘야 해.
+                            추천 이유만을 문장으로 답변해 주고, 만약 100자가 넘을것 같으면 ERROR라고 답변해.
+                            추천된 활동: {task['title']}
+                            사용자의 선호 문장: {task['pref']}""")
+            # ERROR 반환 시 처리: 기본 문구로 대체
+            if "ERROR" in reason_for_recommendation:
+                reason_for_recommendation = f"{task['title']} 활동은 사용자님의 평소 관심사와 핵심 역량에 잘 부합하여 추천합니다."
+            return task["res"], reason_for_recommendation
+
         user_orm = self.session.query(User).filter(User.user_id == user_id).first()
         # 가중치 가져오기
         pref_weight = request.pref_weight
@@ -144,22 +159,26 @@ class RecommendationRepository:
                 activity = self.session.query(Activity).filter(
                     Activity.activity_id == res["activity_id"]
                 ).first()
-                reason_for_recommendation = self.call_llm(f"""
-                        이 활동이 다음 활동을 선호하는 학생에게 추천되었어. 
-                        너는 이제 왜 이 활동이 학생에게 잘 맞을 지 추천 이유를  100자 이내로 설명해 줘야 해.
-                        추천 이유만을 문장으로 답변해 주고, 만약 100자가 넘을것 같으면 ERROR라고 답변해.
-                        추천된 활동: {activity.title}
-                        사용자의 선호 문장: {user_orm.preference}""")
-                
-                # ERROR 반환 시 처리: 기본 문구로 대체
-                if "ERROR" in reason_for_recommendation:
-                    reason_for_recommendation = f"{activity.title} 활동은 사용자님의 평소 관심사와 핵심 역량에 잘 부합하여 추천합니다."
+
+                if activity:
+                    tasks.append({
+                        "res": res,
+                        "title": activity.title,
+                        "pref": user_orm.preference
+                    })
+
+        # 생성된 task 개수만큼 스레드를 열어 병렬 처리
+        if tasks:
+            with ThreadPoolExecutor(max_workers=len(tasks)) as executor:
+                llm_results = list(executor.map(fetch_reason, tasks))
+
+            for res_info, reason_for_recommendations in llm_results:
                 new_rec = Recommendation(
                     user_id=user_id,
-                    activity_id=res['activity_id'],
-                    fitness_score=res['fitness_score'],
+                    activity_id=res_info['activity_id'],
+                    fitness_score=res_info['fitness_score'],
                     likes=False,
-                    reason_for_recommendation=reason_for_recommendation
+                    reason_for_recommendation=reason_for_recommendations
                 )
                 self.session.add(new_rec)
         
