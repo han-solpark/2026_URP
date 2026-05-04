@@ -416,7 +416,7 @@ function CareerTest() {
         {resultUrl ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <h2 style={{ color: '#4a6b82', marginBottom: '12px' }}>
-              검사 결과가 생성되었습니다.
+              검사가 완료되었습니다.
             </h2>
             <p style={{ color: '#66788a', marginBottom: '24px' }}>
               아래 버튼을 누르면 결과 페이지로 이동합니다.
