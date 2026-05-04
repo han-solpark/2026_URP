@@ -15,18 +15,18 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 LLM_KEY = os.getenv("LLM_KEY")
-
+from concurrent.futures import ThreadPoolExecutor
 def update_year():
     session = SessionFactory()
     
     try:
-        rows = session.query(Activity).all()
-    
-        for row in rows:
-            title = row.title
-            detail = row.detail
-            category = row.category
-
+        rows = session.query(Activity).filter(Activity.proper_school_year == None).all()
+        if not rows:
+            print("업데이트할 새로운 데이터가 없습니다.")
+            return
+        
+        # 1. 병렬 처리를 위한 함수 내부 정의
+        def get_year_label(row):
             prompt = f"""
             Return the following string format indicating which undergraduate year the following activity is suitable for:
 
@@ -41,23 +41,32 @@ def update_year():
             [입력] OO 공모전 [출력] 3
             [입력] OO 직원 채용 [출력] 4
 
-            name: {title}\n
-            detail: {detail}\n
-            category: {category}\n
+            name: {row.title}\n
+            detail: {row.detail}\n
+            category: {row.category}\n
             """
+            # LLM 호출만 병렬로 수행
+            result = call_llm(prompt)
+            return row, result
 
-            row.year = call_llm(prompt)
-            
-        # 3. 변경 사항 일괄 반영
+        # 2. 스레드 풀을 사용하여 병렬 실행 (max_workers는 API 제한에 따라 조절)
+        print(f"총 {len(rows)}개의 데이터를 처리 중입니다...")
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            # map을 통해 모든 row에 대해 get_year_label 실행
+            llm_results = list(executor.map(get_year_label, rows))
+
+        # 3. 메인 스레드에서 결과 일괄 반영
+        for row, year_label in llm_results:
+            row.proper_school_year = year_label # 기존 코드의 row.year를 모델 필드명에 맞춰 수정 (proper_school_year 맞죠?)
+
         session.commit()
+        print("모든 데이터 업데이트 완료!")
         
     except Exception as e:
         print(f"에러 발생: {e}")
         session.rollback()
-
     finally:
         session.close()
-
 
 def call_llm(prompt: str):
     client = genai.Client(api_key = LLM_KEY)
