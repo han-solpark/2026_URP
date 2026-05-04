@@ -6,6 +6,8 @@ const MyInfoPage = () => {
   const navigate = useNavigate();
   // 사용자가 이미 검사를 했다고 가정 (프리뷰를 위해 true로 설정)
   const hasTestResult = true; 
+  // 실제 DB 연동 시 fetch해올 결과 URL (예시 데이터)
+  const [testResultUrl] = useState('https://www.career.go.kr/cnet/front/main/main.do'); 
 
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -112,7 +114,20 @@ const MyInfoPage = () => {
             {hasTestResult ? (
               <div className="result-card">
                 <div className="chart-placeholder">[유형 분석 차트]</div>
-                <button onClick={() => navigate('/test')}>재검사하기</button>
+                <div className="button-group">
+                  <button 
+                    className="report-btn" 
+                    onClick={() => window.open(testResultUrl, '_blank')}
+                  >
+                    결과 리포트 보기
+                  </button>
+                  <button 
+                    className="retest-btn" 
+                    onClick={() => navigate('/test')}
+                  >
+                    다시 검사하기
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="no-result-card">
