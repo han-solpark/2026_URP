@@ -8,6 +8,7 @@ import MyInfoPage from './pages/MyInfoPage';
 import RecommendPage from './pages/RecommendPage';
 import RoadmapPage from './pages/RoadmapPage';
 import PastActivitiesPage from './pages/PastActivitiesPage';
+import ActivitiesPage from './pages/ActivitiesPage';
 import './App.css';
 
 const AppContent = () => {
@@ -28,6 +29,7 @@ const AppContent = () => {
           <Route path="/recommend" element={<RecommendPage />} />
           <Route path="/roadmap" element={<RoadmapPage />} />
           <Route path="/past-activities" element={<PastActivitiesPage />} />
+          <Route path="/activities" element={<ActivitiesPage />} />
         </Routes>
       </div>
     </>
