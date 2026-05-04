@@ -22,20 +22,33 @@ class PastActivitiesRepository:
                 "grade3": 3,
                 "grade4": 4
             }
+            # 1. DB에 이미 존재하는 이 유저의 활동 쌍을 미리 가져와서 세트로 만듦
+            existing_in_db = set(
+                self.session.query(PastActivity.activity_id)
+                .filter(PastActivity.user_id == user_id)
+                .all()
+            )
+            # 튜플 리스트를 단일 ID 세트로 변환 ([(1,), (2,)] -> {1, 2})
+            existing_ids = {row[0] for row in existing_in_db}
 
+            # 2. 이번 요청(request) 내에서 중복으로 들어온 ID를 걸러내기 위한 세트
+            seen_in_request = set()
             for field_name, year_value in grade_mapping.items():
                 activity_ids = getattr(request, field_name)
                 
                 if activity_ids:
                     for act_id in activity_ids:
 
-                        record = PastActivity(
-                            user_id=user_id,
-                            activity_id=act_id,
-                            performed_school_year=year_value
-                        )
-
-                        new_records.append(record)
+                        if act_id not in existing_ids and act_id not in seen_in_request:
+                            record = PastActivity(
+                                user_id=user_id,
+                                activity_id=act_id,
+                                performed_school_year=year_value
+                            )
+                            new_records.append(record)
+                            
+                            # 중복 방지 세트에 추가
+                            seen_in_request.add(act_id)
 
             if new_records:
                 self.session.add_all(new_records)
