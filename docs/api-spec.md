@@ -30,7 +30,7 @@ Authorization: Bearer {access_token}
 | `MyInfoPage` | `/my-info` | 유저 정보 조회/수정 |
 | `CareerTest` | `/test` | (커리어넷 외부 API 직접 호출 후) 검사 결과 저장 |
 | `RecommendPage` | `/recommend` | 추천 활동 요청 (가중치 포함) |
-| `RoadmapPage` | `/roadmap` | 하트 저장 활동 조회 |
+| `RoadmapPage` | `/roadmap` | like 저장 활동 조회 |
 | `PastActivitiesPage` | `/past-activities` | 활동 전체 목록 조회, 학년별 활동 저장/조회 |
 
 ---
@@ -103,7 +103,7 @@ PUT /users/me
 
 ---
 
-### 3. 심리검사 결과 저장 (CareerTestPage)
+### 3. 능력검사 결과 저장 (CareerTestPage)
 
 > **흐름**: 커리어넷 외부 API를 프론트에서 직접 호출 → 결과 URL을 백엔드에 저장
 >
@@ -128,7 +128,7 @@ POST /users/me/test-result
 
 > **흐름**: 유저가 관심 문장 입력 + 가중치(선호 문장 / 과거 활동 / 유형 결과) 조정 → 추천 결과 5개 반환
 >
-> 추천 결과 카드에서 하트 토글 가능 (현재 localStorage 관리, 백엔드 연동 시 아래 API 사용)
+> 추천 결과 카드에서 like 토글 가능 (현재 localStorage 관리, 백엔드 연동 시 아래 API 사용)
 
 ```
 POST /activities/recommend
@@ -184,15 +184,15 @@ POST /activities/recommend
 
 ---
 
-### 5. 하트 활동 저장/조회 (RoadmapPage)
+### 5. like 활동 저장/조회 (RoadmapPage)
 
 > 현재 프론트는 localStorage로 관리 중. 백엔드 연동 시 아래 API 필요.
 >
-> RoadmapPage에서는 하트된 활동 목록을 추천 결과와 동일한 형태로 표시합니다.
+> RoadmapPage에서는 like 활동 목록을 추천 결과와 동일한 형태로 표시합니다.
 
-#### 하트 활동 저장
+#### like 활동 저장
 ```
-POST /users/me/hearted-activities
+POST /users/me/liked-activities
 ```
 | 항목 | 내용 |
 |------|------|
@@ -200,9 +200,9 @@ POST /users/me/hearted-activities
 | Request Body | `{ "activity_ids": [1, 3, 5] }` |
 | Response | `{ "success": true }` |
 
-#### 하트 활동 조회
+#### like 활동 조회
 ```
-GET /users/me/hearted-activities
+GET /users/me/liked-activities
 ```
 | 항목 | 내용 |
 |------|------|
@@ -283,5 +283,5 @@ GET /users/me/past-activities
 | 🟡 중요 | `POST /users/me/test-result` | CareerTestPage |
 | 🟡 중요 | `POST /users/me/past-activities` | PastActivitiesPage |
 | 🟡 중요 | `GET /users/me/past-activities` | PastActivitiesPage |
-| 🟢 이후 | `POST /users/me/hearted-activities` | RoadmapPage |
-| 🟢 이후 | `GET /users/me/hearted-activities` | RoadmapPage |
+| 🟢 이후 | `POST /users/me/liked-activities` | RoadmapPage |
+| 🟢 이후 | `GET /users/me/liked-activities` | RoadmapPage |
