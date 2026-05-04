@@ -73,24 +73,25 @@ class RecommendationRepository:
         # 능력 벡터 만들기
         ability = user_orm.ability # dict
         ability_vector = torch.zeros(768)
-        for trait, score in ability.items():
-            if trait in self.ability_map:
-                # 각 유형 임베딩 * 사용자의 해당 점수
-                ability_vector += F.normalize(torch.tensor(self.ability_map[trait]), p=2, dim=0) * score
-        
-        activity_lookup = {a.activity_id: a.embedding for a in self.activities}
+        if ability: 
+            for trait, score in ability.items():
+                if trait in self.ability_map:
+                    # 각 유형 임베딩 * 사용자의 해당 점수
+                    ability_vector += F.normalize(torch.tensor(self.ability_map[trait]), p=2, dim=0) * score
+            
+            activity_lookup = {a.activity_id: a.embedding for a in self.activities}
 
         # 과거 활동 벡터 만들기
         past_activities = self.get_past_activities(user_id)
         past_activity_vector = torch.zeros(768)
         count = 0
-        
-        for pa in past_activities:
-            # pa.activity_id를 이용해 activities 테이블의 embedding 추출
-            target_embedding = activity_lookup.get(pa.activity_id)
-            if target_embedding:
-                past_activity_vector += F.normalize(torch.tensor(target_embedding), p=2, dim=0)
-                count += 1
+        if past_activities:
+            for pa in past_activities:
+                # pa.activity_id를 이용해 activities 테이블의 embedding 추출
+                target_embedding = activity_lookup.get(pa.activity_id)
+                if target_embedding:
+                    past_activity_vector += F.normalize(torch.tensor(target_embedding), p=2, dim=0)
+                    count += 1
         
         if count > 0:
             past_activity_vector /= count
