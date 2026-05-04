@@ -11,8 +11,8 @@ app.include_router(rec_router)
 app.include_router(act_router)
 
 origins = [
-    "http://localhost:3000",  # 예: React, Next.js 등 로컬 개발 서버 기본 주소
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",  # 예: React, Next.js 등 로컬 개발 서버 기본 주소
+    "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(
