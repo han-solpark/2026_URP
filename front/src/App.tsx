@@ -15,15 +15,13 @@ const AppContent = () => {
   const location = useLocation();
   const hideHeaderPaths = ['/login', '/signup'];
   const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
-  const isLoggedIn = !!localStorage.getItem('token');
-
   return (
     <>
       {!shouldHideHeader && <Header />}
       <div className={shouldHideHeader ? "" : "container"}>
         <Routes>
-          <Route path="/login" element={isLoggedIn ? <Navigate to="/activities" /> : <LoginPage />} />
-          <Route path="/signup" element={isLoggedIn ? <Navigate to="/activities" /> : <SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/test" element={<CareerTest />} />
           <Route path="/my-info" element={<MyInfoPage />} />
