@@ -35,8 +35,8 @@ class UserRepository:
             name=user_orm.name,
             school_year=user_orm.school_year,
             has_test_result=(user_orm.ability is not None),
-            ability_url=user_orm.ability_url or "",
-            ability=user_orm.ability or {},
+            ability_url=user_orm.ability_url,
+            ability=user_orm.ability,
         )
 
     def modify_user_info(self, user_id: str, request: UserModifyRequest) -> UserSchema:
@@ -53,8 +53,8 @@ class UserRepository:
                 name=user_orm.name,
                 school_year=user_orm.school_year,
                 has_test_result=(user_orm.ability is not None),
-                ability_url=user_orm.ability_url or "",
-                ability=user_orm.ability or {},
+                ability_url=user_orm.ability_url,
+                ability=user_orm.ability,
             )
         except Exception as e:
             self.session.rollback()

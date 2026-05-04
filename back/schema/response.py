@@ -3,12 +3,12 @@ from pydantic import BaseModel
 from typing import Optional
 
 class UserSchema(BaseModel):
-    user_id: int
+    user_id: str
     name: str
     school_year: int
     has_test_result: bool
-    ability_url: str
-    ability: dict
+    ability_url: Optional[str] = None
+    ability: Optional[dict] = None 
 
     class Config:
         orm_mode = True

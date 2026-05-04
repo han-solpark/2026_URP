@@ -1,5 +1,6 @@
 # Python cache
 __pycache__/
+mysql_data/
 *.py[cod]
 *.pyo
 

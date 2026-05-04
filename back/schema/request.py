@@ -9,7 +9,7 @@ class ResultReportRequest(BaseModel): # 심리검사 결과 레포트 요청 스
     gender: str          
     school: Optional[str] = ""
     grade: str           
-    startDtm: int = "" 
+    startDtm: Optional[int] = 0
     answers: str        
 
 class SignUpRequest(BaseModel):

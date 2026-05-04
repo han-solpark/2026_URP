@@ -51,8 +51,6 @@ class PastActivity(Base):
     activity_id = Column(Integer, ForeignKey("activities.activity_id"), primary_key=True)
     
     performed_school_year = Column(Integer, comment="수행 학기")
-    activity_satisfaction = Column(Integer, comment="활동 만족도")
-    carrier_satisfation = Column(Integer, comment="경로 만족도")
 
     # 관계 설정: 객체 관점에서 유저와 활동 정보에 바로 접근 가능
     user = relationship("User", backref="past_activities")
