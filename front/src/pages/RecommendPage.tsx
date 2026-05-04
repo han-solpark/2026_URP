@@ -20,6 +20,7 @@ const RecommendPage = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [likedIds, setLikedIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const [prefWeight, setPrefWeight] = useState(50);
   const [activityWeight, setActivityWeight] = useState(50);
@@ -30,6 +31,16 @@ const RecommendPage = () => {
     '기초과학연구', '바이오/제약', '신소재/에너지', '건축', '인턴/현장실습',
     '공모전', '경진대회', '학술연구', '창업준비', '진로탐색'
   ];
+
+  useEffect(() => {
+    api.get('/recommendations/get').then((data: Recommendation[]) => {
+      if (data && data.length > 0) {
+        setRecommendations(data);
+        setLikedIds(data.filter(r => r.liked).map(r => r.activity_id));
+        setIsRecommended(true);
+      }
+    }).finally(() => setInitialLoading(false));
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -64,6 +75,7 @@ const RecommendPage = () => {
       return;
     }
     setIsLoading(true);
+    await api.post('/users/me/preference', { preference: preferredSentence });
     const data = await api.post('/recommendations/recommend', {
       pref_weight: prefWeight,
       activities_weight: activityWeight,
@@ -74,6 +86,8 @@ const RecommendPage = () => {
     setIsLoading(false);
     setIsRecommended(true);
   };
+
+  if (initialLoading) return <div className="recommend-page"><p>불러오는 중...</p></div>;
 
   if (!isRecommended) {
     return (
