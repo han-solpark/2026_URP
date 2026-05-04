@@ -28,3 +28,12 @@ class PastActivitiesResponse(BaseModel):
     grade2: Optional[list[int]] = None
     grade3: Optional[list[int]] = None
     grade4: Optional[list[int]] = None
+
+class RecommendActivitiesResponse(BaseModel):
+    activity_id:int
+    source_url: str
+    category: str
+    title: str
+    reason_for_recommendation: str
+    fitness_score: float
+    liked: bool

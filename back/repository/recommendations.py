@@ -24,7 +24,7 @@ LLM_KEY = os.getenv("LLM_KEY")
 
 import datetime
 from dateutil.relativedelta import relativedelta
-from schema.response import LikedActiviteisResponse
+from schema.response import LikedActiviteisResponse, RecommendActivitiesResponse
 CURRENT_DATE = datetime.date.today()
 
 class RecommendationRepository:
@@ -163,6 +163,36 @@ class RecommendationRepository:
         self.session.commit()
         
         return top_5_results
+    
+    def get_recommend_activity(self, user_id: str):
+        stmt = (
+            select(
+                Activity.activity_id,
+                Activity.category,
+                Activity.title,
+                Activity.source_url,
+                Recommendation.reason_for_recommendation,
+                Recommendation.fitness_score,
+                Recommendation.likes
+            )
+            .join(Recommendation, Activity.activity_id == Recommendation.activity_id)
+            .where(Recommendation.user_id == user_id)
+        )
+
+        result = self.session.execute(stmt)
+        
+        return [
+            RecommendActivitiesResponse(
+                activity_id=row.activity_id,
+                category=row.category,
+                title=row.title,
+                source_url=row.source_url,
+                reason_for_recommendation=row.reason_for_recommendation,
+                fitness_score=row.fitness_score,
+                liked=row.likes
+            )
+            for row in result
+        ]
     
     def like_activity(self, user_id: str, request: LikedActivitiesRequest):
         try:

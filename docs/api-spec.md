@@ -90,7 +90,7 @@ PUT /users/me
 |------|------|
 | 인증 | 필요 |
 | Request Body | `{ "school_year": 3 }` |
-| Response | 수정된 유저 정보 |
+| Response | 수정된 유저 정보 (user_orm) |
 
 ---
 
@@ -103,7 +103,7 @@ POST /users/me/test-result
 |------|------|
 | 인증 | 필요 |
 | Request Body | `{ "gender": "성별", "grade": 2, "answers": 2,3,4,... }` |
-| Response | `{ "success": true }` |
+| Response | 수정된 유저 정보 (user_orm) |
 
 ---
 ### 4. 선호 문장
@@ -114,14 +114,14 @@ POST /me/preference
 |------|------|
 | 인증 | 필요 |
 | Request Body | `{ "preference": "선호활동"}` |
-| Response | `{ "success": true }` |
+| Response | 수정된 유저 정보 (user_orm) |
 
 ---
 
 ### 5. 활동 추천 (RecommendPage)
 
 ```
-POST /activities/recommend
+POST /recommendations/recommend
 ```
 | 항목 | 내용 |
 |------|------|
@@ -137,15 +137,24 @@ POST /activities/recommend
   "type_weight": 50
 }
 ```
+**Response**
+```json
+추천 활동 목록과 동일한 형태 (activity_id, category, title, reason_for_recommendation, source_url, fitness_socre, liked)
+```
+
+```
+GET /recommendations/get
+```
+| 항목 | 내용 |
+|------|------|
+| 인증 | 필요 |
+| Request Body | 아래 참고 |
+| Response | 아래 참고 |
+
 
 **Response**
 ```json
-[
-  {
-    "activity_id": 1,
-    "fitness_score": "연구활동"
-  }
-]
+추천 활동 목록과 동일한 형태 (activity_id, category, title, reason_for_recommendation, source_url, fitness_socre, liked)
 ```
 
 ---
@@ -156,23 +165,23 @@ POST /activities/recommend
 
 #### 하트
 ```
-POST /users/me/hearted-activities/{activity_id}
+POST /users/me/liked-activities
 ```
 | 항목 | 내용 |
 |------|------|
 | 인증 | 필요 |
-| Path Param | `activity_id` — 하트할 활동 ID |
+| Request | `{ "activity_id": 하트할 활동 ID }` |
 | Response | `{ "success": true }` |
 
 ### 6. 하트 활동 조회 (RoadmapPage)
 
 ```
-GET /users/me/hearted-activities
+GET /users/me/liked-activities
 ```
 | 항목 | 내용 |
 |------|------|
 | 인증 | 필요 |
-| Response | 추천 활동 목록과 동일한 형태 (id, category, title, description, recommendationReason, url) |
+| Response | 추천 활동 목록과 동일한 형태 (activity_id, category, title, reason_for_recommendation, source_url) |
 
 ---
 
@@ -191,8 +200,6 @@ GET /activities
 ---
 
 ### 8. 학년별 참여 활동 조회/추가/삭제 (PastActivitiesPage)
-
-> 추가/삭제 시 즉시 서버에 반영합니다. "전체 저장" 버튼 불필요.
 
 #### 학년별 활동 조회
 ```
@@ -225,22 +232,3 @@ DELETE /users/me/past-activities/{activity_id}
 | Response | `{ "success": true }` |
 
 ---
-
-## 구현 우선순위
-
-| 우선순위 | 엔드포인트 | 연결 페이지 |
-|---------|-----------|------------|
-| 🔴 필수 | `POST /users/log-in` | LoginPage |
-| 🔴 필수 | `GET /users/check-username/{id}` | SignupPage |
-| 🔴 필수 | `POST /users/sign-up` | SignupPage |
-| 🔴 필수 | `GET /users/me` | MyInfoPage |
-| 🔴 필수 | `GET /activities` | PastActivitiesPage |
-| 🔴 필수 | `GET /users/me/past-activities` | PastActivitiesPage |
-| 🔴 필수 | `POST /users/me/past-activities/{activity_id}` | PastActivitiesPage |
-| 🔴 필수 | `DELETE /users/me/past-activities/{activity_id}` | PastActivitiesPage |
-| 🔴 필수 | `POST /activities/recommend` | RecommendPage |
-| 🟡 중요 | `PUT /users/me` | MyInfoPage |
-| 🟡 중요 | `POST /users/me/test-result` | CareerTestPage |
-| 🟡 중요 | `POST /users/me/hearted-activities/{activity_id}` | RecommendPage |
-| 🟡 중요 | `DELETE /users/me/hearted-activities/{activity_id}` | RecommendPage |
-| 🟢 이후 | `GET /users/me/hearted-activities` | RoadmapPage |
