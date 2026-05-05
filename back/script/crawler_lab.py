@@ -15,22 +15,20 @@ from database.orm import Activity              # ORM 모델
 
 def save_labs(labs):
     session = SessionFactory()
-    
+
     try:
-        for item in labs: # labs는 name url detail로 구성
-            # 2. 중복 체크 (URL 기준)
-            exists = session.query(Activity).filter(Activity.title == item['title']).first()
-            
-            if not exists:
-                new_row = Activity(**item) 
-                session.add(new_row)
+        existing_titles = {t[0] for t in session.query(Activity.title).all()}
+
+        for item in labs:
+            if item['title'] not in existing_titles:
+                session.add(Activity(**item))
+                existing_titles.add(item['title'])
                 print(f"신규 추가: {item['title']}")
             else:
-                # 이미 존재하면 루프를 중단하거나 건너뜀
                 print(f"중복 패스: {item['title']}")
-        
+
         session.commit()
-        
+
     except Exception as e:
         print(f"에러 발생: {e}")
         session.rollback()

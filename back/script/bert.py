@@ -12,8 +12,8 @@ def embedding():
     )
     
     try:
-        rows = session.query(Activity).all()
-    
+        rows = session.query(Activity).filter(Activity.embedding == None).all()
+
         for row in rows:
             title = row.title
             detail = row.detail

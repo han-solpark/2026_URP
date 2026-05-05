@@ -19,33 +19,24 @@ from datetime import datetime
 
 def save_notices(notices):
     session = SessionFactory()
-    
+
     try:
-        for item in notices: # notices는 name url detail로 구성
+        existing_titles = {t[0] for t in session.query(Activity.title).all()}
+
+        for item in notices:
             if '장학' in item['title']:
                 print(f"장학금 항목 제외: {item['title']}")
                 continue
-            # 2. 중복 체크 (URL 기준)
-            exists = session.query(Activity).filter(Activity.title == item['title']).first()
-            
-            if not exists:
-                new_row = Activity(**item) 
-                """
-                **item 통해 
-                new_row = Activity(
-                name=item['name'],
-                url=item['url'],
-                detail=item['detail']
-                ) 와 같은 형식으로 자동으로 맵핑되어 INSERT 쿼리를 생성함.
-                """
-                session.add(new_row)
+
+            if item['title'] not in existing_titles:
+                session.add(Activity(**item))
+                existing_titles.add(item['title'])
                 print(f"신규 추가: {item['title']}")
             else:
-                # 이미 존재하면 루프를 중단하거나 건너뜀
                 print(f"중복 패스: {item['title']}")
-        
+
         session.commit()
-        
+
     except Exception as e:
         print(f"에러 발생: {e}")
         session.rollback()
